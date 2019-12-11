@@ -69,15 +69,39 @@
 			children = (
 				105FAAAC23A0E88C0004FF20 /* AppDelegate.swift */,
 				105FAAAE23A0E88C0004FF20 /* SceneDelegate.swift */,
-				105FAAB023A0E88C0004FF20 /* FirstViewController.swift */,
-				105FAAC023A0F2F60004FF20 /* SecondViewController.swift */,
-				105FAAB223A0E88C0004FF20 /* Main.storyboard */,
+				105FAAC523A151170004FF20 /* Models */,
+				105FAAC623A151280004FF20 /* Views */,
+				105FAAC423A1510C0004FF20 /* Controllers */,
 				105FAAB523A0E8920004FF20 /* Assets.xcassets */,
-				105FAAB723A0E8920004FF20 /* LaunchScreen.storyboard */,
 				105FAABA23A0E8920004FF20 /* Info.plist */,
-				105FAAC223A133A40004FF20 /* OAuthManager.swift */,
 			);
 			path = SwiftyCompanion;
+			sourceTree = "<group>";
+		};
+		105FAAC423A1510C0004FF20 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				105FAAB023A0E88C0004FF20 /* FirstViewController.swift */,
+				105FAAC023A0F2F60004FF20 /* SecondViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		105FAAC523A151170004FF20 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				105FAAC223A133A40004FF20 /* OAuthManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		105FAAC623A151280004FF20 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				105FAAB223A0E88C0004FF20 /* Main.storyboard */,
+				105FAAB723A0E8920004FF20 /* LaunchScreen.storyboard */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		7C87FDF1E0BF579348F4BB2B /* Frameworks */ = {

@@ -16,7 +16,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BtX-kU-T8D">
-                                <rect key="frame" x="0.0" y="88" width="414" height="409"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="409"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Jpj-oq-cxa">
                                         <rect key="frame" x="30" y="187.5" width="354" height="34"/>
@@ -57,6 +57,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="zmy-HN-evd"/>
+                    <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="searchTextField" destination="Jpj-oq-cxa" id="tcf-UN-2J0"/>
                         <outlet property="searchUserDataButtonLabel" destination="490-Z2-Bk7" id="byW-Vy-aWv"/>
@@ -78,18 +79,18 @@
                         <viewLayoutGuide key="safeArea" id="crP-zV-Zx0"/>
                     </view>
                     <navigationItem key="navigationItem" title="User's Profile" id="fjR-7d-xLh"/>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <nil key="simulatedTopBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q28-XJ-jy5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1401" y="465"/>
+            <point key="canvasLocation" x="1398.5507246376812" y="464.73214285714283"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="tsH-Ua-5Y1">
             <objects>
-                <navigationController id="qxc-Eh-6Vp" sceneMemberID="viewController">
+                <navigationController navigationBarHidden="YES" id="qxc-Eh-6Vp" sceneMemberID="viewController">
+                    <nil key="simulatedTopBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="vVa-j0-GzM">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
