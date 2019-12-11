@@ -20,20 +20,25 @@ class FirstViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        searchTextField.text = "svovchyn"
+        
         navigationController?.navigationBar.isHidden = true
-        searchUserDataButtonLabel.isHidden = true
-        OAuthManager.getToken { result in
-            switch result {
-            case .success(let newToken):
-                self.token = (newToken["access_token"] as! String)
-                UIView.animate(withDuration: 1) {
-                    self.searchUserDataButtonLabel.isHidden = false
-                }
-            case .failure(let error):
-                print(error)
-                self.presentAlert(text: error.localizedDescription)
-            }
-        }
+//        searchUserDataButtonLabel.isHidden = true
+//        OAuthManager.getToken { result in
+//            switch result {
+//            case .success(let newToken):
+//                self.token = (newToken["access_token"] as! String)
+//                print(self.token)
+//                UIView.animate(withDuration: 1) {
+//                    self.searchUserDataButtonLabel.isHidden = false
+//                }
+//            case .failure(let error):
+//                print(error)
+//                self.presentAlert(text: error.localizedDescription)
+//            }
+//        }
+        token = "92f459e17bf53d0dccf805304df32dd52efc2eae462f683aca28f9b256457495"
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -43,20 +48,20 @@ class FirstViewController: UIViewController {
     
     @IBAction func searchUserDataButton(_ sender: UIButton) {
         if searchTextField.text != "" {
-            OAuthManager.searchUser(query: searchTextField.text!, token: token!) { result in
-                switch result {
-                case .success(let userData):
-                    if userData.count > 0 {
-                        self.userData = JSON(userData)
+//            OAuthManager.searchUser(query: searchTextField.text!, token: token!) { result in
+//                switch result {
+//                case .success(let userData):
+//                    if userData.count > 0 {
+//                        self.userData = JSON(userData)
                         self.performSegue(withIdentifier: "showUserData", sender: self)
-                    } else {
-                        self.presentAlert(text: "User not found!")
-                    }
-                case .failure(let error):
-                    print(error)
-                    self.presentAlert(text: error.localizedDescription)
-                }
-            }
+//                    } else {
+//                        self.presentAlert(text: "User not found!")
+//                    }
+//                case .failure(let error):
+//                    print(error)
+//                    self.presentAlert(text: error.localizedDescription)
+//                }
+//            }
         } else {
             self.presentAlert(text: "Please enter some text to make a query")
         }
