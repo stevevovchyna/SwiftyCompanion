@@ -7,15 +7,16 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class SecondViewController: UIViewController {
     
-    var someData : String?
+    var userData : JSON?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = false
-        print(someData ?? "Neudacha")
+        print(userData ?? "Neudacha")
         // Do any additional setup after loading the view.
     }
     

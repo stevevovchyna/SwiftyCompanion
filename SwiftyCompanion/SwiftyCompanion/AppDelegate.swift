@@ -7,14 +7,31 @@
 //
 
 import UIKit
+import Alamofire
+import SwiftyJSON
+import SwiftKeychainWrapper
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+//        let parameters = ["grant_type" : "client_credentials", "client_id" : "fde0aa7c5eec519a007e41ef35a88a63cd59341544fbdfdc17c9d7762fceb481", "client_secret" : "254a6eaa192270af710cbac115c6ab75a5df68edab025c76913d7494d60100c8"]
+//        Alamofire.request("https://api.intra.42.fr/oauth/token", method: .post, parameters: parameters).responseJSON {
+//            response in
+//            DispatchQueue.main.async {
+//                if response.result.isSuccess {
+//                    print(response)
+//                    let tokenData : JSON = JSON(response.result.value!)
+//                    let token = tokenData["access_token"]
+//                    KeychainWrapper.standard.set(token.stringValue, forKey: "intraOAuthToken")
+//                    print(token.stringValue)
+//                } else {
+//                    print("Error: \(response.result.error!))")
+//                }
+//            }
+//        }
+        
         return true
     }
 
