@@ -14,12 +14,17 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var specialView: UIView!
     @IBOutlet weak var tableView: UITableView!
     let imageView = UIImageView()
+    let usernameLabel = UILabel()
+    let emailLabel = UILabel()
+    let backButton = UIButton()
 
     var userData : JSON?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.isHidden = false
+        
+        navigationController?.title = "svovchyn's info"
         
         tableView.estimatedRowHeight = 50
         tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
@@ -32,9 +37,27 @@ class SecondViewController: UIViewController {
         imageView.clipsToBounds = true
         specialView.addSubview(imageView)
         
+        usernameLabel.frame = CGRect(x: 10, y: 270, width: UIScreen.main.bounds.size.width, height: 30)
+        usernameLabel.text = "Stepan Vovchynudzinskyi"
+        usernameLabel.textColor = UIColor.white
+        specialView.addSubview(usernameLabel)
+        
+        emailLabel.frame = CGRect(x: 10, y: 300, width: UIScreen.main.bounds.size.width, height: 30)
+        emailLabel.text = "svovchyn@unit.facroty.ua"
+        emailLabel.textColor = UIColor.white
+        specialView.addSubview(emailLabel)
+        
+        backButton.frame = CGRect(x: 10, y: 10 + 44, width: 50, height: 50)
+        backButton.layer.cornerRadius = 25
+        backButton.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
+        specialView.addSubview(backButton)
 
     }
     
+    @objc func backButtonClicked() {
+        navigationController?.popViewController(animated: true)
+    }
 }
 
 extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
@@ -57,8 +80,14 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
         let y = 300 - (scrollView.contentOffset.y + 300)
         let height = min(max(y, 200), 400)
         imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: height)
+        emailLabel.frame = CGRect(x: 10, y: y - 44, width: UIScreen.main.bounds.size.width, height: 30)
+        usernameLabel.frame = CGRect(x: 10, y: y - 74, width: UIScreen.main.bounds.size.width, height: 30)
         if scrollView.contentOffset.y < -400 {
             scrollView.contentOffset.y = -400
+        }
+        if scrollView.contentOffset.y > -200 {
+            emailLabel.frame = CGRect(x: 10, y: 156, width: UIScreen.main.bounds.size.width, height: 30)
+            usernameLabel.frame = CGRect(x: 10, y: 126, width: UIScreen.main.bounds.size.width, height: 30)
         }
     }
 
