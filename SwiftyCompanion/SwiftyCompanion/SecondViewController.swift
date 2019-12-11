@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  SecondViewController.swift
 //  SwiftyCompanion
 //
 //  Created by Steve Vovchyna on 11.12.2019.
@@ -8,13 +8,15 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class SecondViewController: UIViewController {
+    
+    var someData : String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.isHidden = false
+        print(someData ?? "Neudacha")
         // Do any additional setup after loading the view.
     }
-
-
+    
 }
-
