@@ -56,7 +56,7 @@ class SecondViewController: UIViewController {
     
     var userData : JSON?
     var topInset : CGFloat?
-    var coalitionColor : UIColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
+    var coalitionColor : UIColor = #colorLiteral(red: 0.4692698717, green: 0.6561034322, blue: 0.4752988815, alpha: 0.8)
     
     var username : String = "svovchyn"
     var emailText : String = "svovchyn@unit.facroty.ua"
@@ -64,10 +64,10 @@ class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        tableView.estimatedRowHeight = 50
         tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
         tableView.backgroundColor = .clear
         tableView.register(UINib(nibName: "LevelTableViewCell", bundle: nil), forCellReuseIdentifier: "levelCell")
+        tableView.register(UINib(nibName: "GeneralDataTableViewCell", bundle: nil), forCellReuseIdentifier: "generalDataCell")
         
         imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 300)
         imageView.image = UIImage(named: "svovchyn")
@@ -126,16 +126,31 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
         switch indexPath.row {
         case 0:
             let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
+            levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
             levelCell.levelLabel.text = "level - 10,45%"
             levelCell.backgroundLabel.backgroundColor = coalitionColor
             let rightInset = UIScreen.main.bounds.size.width - (UIScreen.main.bounds.size.width / 21) * 10.45
             levelCell.rightConstraint.constant = rightInset
             return levelCell
+        case 1:
+            let generalCell = tableView.dequeueReusableCell(withIdentifier: "generalDataCell", for: indexPath) as! GeneralDataTableViewCell
+            generalCell.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 0.7928617295)
+            generalCell.fullNameLabel.text = "Stepan Vovchyna"
+            generalCell.phoneNumberLabel.text = "+380936579161"
+            generalCell.evaluationPointsLabel.text = "10"
+            generalCell.gradeLabel.text = "Lieutenant"
+            generalCell.walletLabel.text = "75"
+            generalCell.poolYearLabel.text = "2018"
+            return generalCell
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! InfoTableViewCell
             cell.myCellLabel.text = "some random data"
             return cell
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.cellForRow(at: indexPath)?.isSelected = false
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

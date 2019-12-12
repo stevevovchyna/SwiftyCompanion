@@ -38,7 +38,7 @@ class FirstViewController: UIViewController {
 //                self.presentAlert(text: error.localizedDescription)
 //            }
 //        }
-        token = "92f459e17bf53d0dccf805304df32dd52efc2eae462f683aca28f9b256457495"
+        token = "94ad7a3cccdce2b13c57cbb05dc7c1d0109015b22555bd2c6922f39aa4e3e14d"
     }
     
     override func viewWillAppear(_ animated: Bool) {
