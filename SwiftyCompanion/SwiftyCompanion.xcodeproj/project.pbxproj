@@ -20,6 +20,7 @@
 		105FAACC23A2347D0004FF20 /* LevelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 105FAACA23A2347D0004FF20 /* LevelTableViewCell.xib */; };
 		105FAAD023A242520004FF20 /* GeneralDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105FAACE23A242520004FF20 /* GeneralDataTableViewCell.swift */; };
 		105FAAD123A242520004FF20 /* GeneralDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 105FAACF23A242520004FF20 /* GeneralDataTableViewCell.xib */; };
+		105FAAD323A288160004FF20 /* UserDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 105FAAD223A288160004FF20 /* UserDataModel.swift */; };
 		3D8EABA0E0DFD5C8284A5AD2 /* Pods_SwiftyCompanion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67BD8AF6C10F52FA64D4DC06 /* Pods_SwiftyCompanion.framework */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +40,7 @@
 		105FAACA23A2347D0004FF20 /* LevelTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LevelTableViewCell.xib; sourceTree = "<group>"; };
 		105FAACE23A242520004FF20 /* GeneralDataTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralDataTableViewCell.swift; sourceTree = "<group>"; };
 		105FAACF23A242520004FF20 /* GeneralDataTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GeneralDataTableViewCell.xib; sourceTree = "<group>"; };
+		105FAAD223A288160004FF20 /* UserDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataModel.swift; sourceTree = "<group>"; };
 		36362B82AD76BAD5743703AE /* Pods-SwiftyCompanion.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftyCompanion.debug.xcconfig"; path = "Target Support Files/Pods-SwiftyCompanion/Pods-SwiftyCompanion.debug.xcconfig"; sourceTree = "<group>"; };
 		54D430353886D29668B72FC4 /* Pods-SwiftyCompanion.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwiftyCompanion.release.xcconfig"; path = "Target Support Files/Pods-SwiftyCompanion/Pods-SwiftyCompanion.release.xcconfig"; sourceTree = "<group>"; };
 		67BD8AF6C10F52FA64D4DC06 /* Pods_SwiftyCompanion.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftyCompanion.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +104,7 @@
 			children = (
 				105FAAC223A133A40004FF20 /* OAuthManager.swift */,
 				105FAAC723A186710004FF20 /* InfoTableViewCell.swift */,
+				105FAAD223A288160004FF20 /* UserDataModel.swift */,
 				105FAACD23A234890004FF20 /* Cells */,
 			);
 			path = Models;
@@ -267,6 +270,7 @@
 				105FAACB23A2347D0004FF20 /* LevelTableViewCell.swift in Sources */,
 				105FAAD023A242520004FF20 /* GeneralDataTableViewCell.swift in Sources */,
 				105FAAC823A186710004FF20 /* InfoTableViewCell.swift in Sources */,
+				105FAAD323A288160004FF20 /* UserDataModel.swift in Sources */,
 				105FAAAD23A0E88C0004FF20 /* AppDelegate.swift in Sources */,
 				105FAAAF23A0E88C0004FF20 /* SceneDelegate.swift in Sources */,
 			);

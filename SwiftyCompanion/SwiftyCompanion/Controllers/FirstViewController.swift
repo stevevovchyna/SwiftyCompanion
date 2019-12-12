@@ -13,7 +13,7 @@ import SwiftyJSON
 class FirstViewController: UIViewController {
     
     var token : String?
-    var userData : JSON?
+    var userData : UserData?
 
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchUserDataButtonLabel: UIButton!
@@ -29,7 +29,7 @@ class FirstViewController: UIViewController {
 //            switch result {
 //            case .success(let newToken):
 //                self.token = (newToken["access_token"] as! String)
-//                print(self.token)
+//                print(self.token ?? "tokena netu")
 //                UIView.animate(withDuration: 1) {
 //                    self.searchUserDataButtonLabel.isHidden = false
 //                }
@@ -38,7 +38,7 @@ class FirstViewController: UIViewController {
 //                self.presentAlert(text: error.localizedDescription)
 //            }
 //        }
-        token = "94ad7a3cccdce2b13c57cbb05dc7c1d0109015b22555bd2c6922f39aa4e3e14d"
+        token = "6aaa77234f2e16d6bcbba6b3671043ba8a2a35ece36ec82fa3482b934076155e"
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,20 +48,20 @@ class FirstViewController: UIViewController {
     
     @IBAction func searchUserDataButton(_ sender: UIButton) {
         if searchTextField.text != "" {
-//            OAuthManager.searchUser(query: searchTextField.text!, token: token!) { result in
-//                switch result {
-//                case .success(let userData):
-//                    if userData.count > 0 {
-//                        self.userData = JSON(userData)
+            OAuthManager.searchUser(query: searchTextField.text!, token: token!) { result in
+                switch result {
+                case .success(let userData):
+                    if userData.count > 0 {
+                        self.userData = UserData(userData: JSON(userData), APIToken: self.token ?? "")
                         self.performSegue(withIdentifier: "showUserData", sender: self)
-//                    } else {
-//                        self.presentAlert(text: "User not found!")
-//                    }
-//                case .failure(let error):
-//                    print(error)
-//                    self.presentAlert(text: error.localizedDescription)
-//                }
-//            }
+                    } else {
+                        self.presentAlert(text: "User not found!")
+                    }
+                case .failure(let error):
+                    print(error)
+                    self.presentAlert(text: error.localizedDescription)
+                }
+            }
         } else {
             self.presentAlert(text: "Please enter some text to make a query")
         }

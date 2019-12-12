@@ -33,12 +33,12 @@
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="adt-at-wap" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="Jcs-Qb-efA"/>
-                    <constraint firstAttribute="bottom" secondItem="0oF-9w-ezE" secondAttribute="bottom" id="KQJ-SR-Q10"/>
-                    <constraint firstAttribute="trailing" secondItem="0oF-9w-ezE" secondAttribute="trailing" id="Ld6-AZ-ifs"/>
-                    <constraint firstItem="adt-at-wap" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="TTg-go-mNa"/>
-                    <constraint firstItem="0oF-9w-ezE" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="bxz-rO-nn4"/>
-                    <constraint firstItem="0oF-9w-ezE" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="p8U-4I-C4T"/>
+                    <constraint firstItem="adt-at-wap" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" priority="999" id="Jcs-Qb-efA"/>
+                    <constraint firstAttribute="bottom" secondItem="0oF-9w-ezE" secondAttribute="bottom" priority="999" id="KQJ-SR-Q10"/>
+                    <constraint firstAttribute="trailing" secondItem="0oF-9w-ezE" secondAttribute="trailing" priority="999" id="Ld6-AZ-ifs"/>
+                    <constraint firstItem="adt-at-wap" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" priority="999" id="TTg-go-mNa"/>
+                    <constraint firstItem="0oF-9w-ezE" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" priority="999" id="bxz-rO-nn4"/>
+                    <constraint firstItem="0oF-9w-ezE" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" priority="999" id="p8U-4I-C4T"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

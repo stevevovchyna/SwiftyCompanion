@@ -54,15 +54,14 @@ class SecondViewController: UIViewController {
     let availabilityLabel = myLabel()
     let backButton = UIButton()
     
-    var userData : JSON?
+    var userData : UserData?
     var topInset : CGFloat?
     var coalitionColor : UIColor = #colorLiteral(red: 0.4692698717, green: 0.6561034322, blue: 0.4752988815, alpha: 0.8)
-    
-    var username : String = "svovchyn"
-    var emailText : String = "svovchyn@unit.facroty.ua"
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        userData?.description()
         
         specialView.backgroundColor = coalitionColor
         
@@ -72,18 +71,22 @@ class SecondViewController: UIViewController {
         tableView.register(UINib(nibName: "GeneralDataTableViewCell", bundle: nil), forCellReuseIdentifier: "generalDataCell")
         
         imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 300)
-        imageView.image = UIImage(named: "svovchyn")
+//        imageView.image = UIImage(named: "svovchyn")
+        DispatchQueue.main.async {
+            self.imageView.image = UIImage(data: self.userData!.userImage)
+            print("privetiki")
+        }
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         specialView.addSubview(imageView)
         
-        usernameLabel.text = username
+        usernameLabel.text = userData?.username
         usernameLabel.frame = CGRect(x: 10, y: 265, width: 0, height: 0)
         usernameLabel.backgroundColor = coalitionColor
         usernameLabel.textColor = .white
         specialView.addSubview(usernameLabel)
         
-        emailLabel.text = emailText
+        emailLabel.text = userData?.email
         emailLabel.frame = CGRect(x: 10, y: 300, width: 0, height: 0)
         emailLabel.backgroundColor = coalitionColor
         emailLabel.textColor = .white
@@ -120,7 +123,7 @@ class SecondViewController: UIViewController {
 extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 17 + 77
+        return 4 + (userData?.projects.count ?? 0) + (userData?.skills.count ?? 0)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -128,26 +131,28 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let numberOfProjects = 77
+        let skillsCount = userData?.skills.count ?? 0
+        let projectsCount = userData?.projects.count ?? 0
         switch indexPath.row {
         case 0:
             let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
+            let floatLevel = ((userData?.level ?? "0") as NSString).floatValue
             levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
             levelCell.cellHeight.constant = 44
-            levelCell.levelLabel.text = "level - 10,45%"
+            levelCell.levelLabel.text = String(format: "%.2f%", floatLevel)
             levelCell.backgroundLabel.backgroundColor = coalitionColor
-            let rightInset = UIScreen.main.bounds.size.width - (UIScreen.main.bounds.size.width / 21) * 10.45
+            let rightInset = UIScreen.main.bounds.size.width - (UIScreen.main.bounds.size.width / 21) * CGFloat(floatLevel)
             levelCell.rightConstraint.constant = rightInset
             return levelCell
         case 1:
             let generalCell = tableView.dequeueReusableCell(withIdentifier: "generalDataCell", for: indexPath) as! GeneralDataTableViewCell
             generalCell.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 0.5)
-            generalCell.fullNameLabel.text = "Stepan Vovchyna"
-            generalCell.phoneNumberLabel.text = "+380936579161"
-            generalCell.evaluationPointsLabel.text = "10"
-            generalCell.gradeLabel.text = "Lieutenant"
-            generalCell.walletLabel.text = "75"
-            generalCell.poolYearLabel.text = "2018"
+            generalCell.fullNameLabel.text = "\(userData?.firstName ?? "Somebody") \(userData?.lastName ?? "Somebody")"
+            generalCell.phoneNumberLabel.text = userData?.phone
+            generalCell.evaluationPointsLabel.text = userData?.evaluationPoints
+            generalCell.gradeLabel.text = userData?.grade
+            generalCell.walletLabel.text = userData?.wallets
+            generalCell.poolYearLabel.text = userData?.poolYear
             return generalCell
         case 2:
             let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
@@ -157,18 +162,21 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
             levelCell.levelLabel.textColor = .white
             levelCell.rightConstraint.constant = 0
             return levelCell
-        case 3...17:
+        case 3...skillsCount + 2:
             let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
-            let randomNumber = CGFloat(Int.random(in: 0...20))
-            levelCell.cellHeight.constant = 20
-            levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
-            levelCell.levelLabel.text = "skill name - \(String(format: "%.f", randomNumber))"
+            if let skill = userData?.skills[indexPath.row - 3] {
+                levelCell.levelLabel.text = "\(skill.skillName) - \(skill.skillLevel)"
+                let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 20) * CGFloat(Double(skill.skillLevel) ?? 0))
+                levelCell.rightConstraint.constant = rightInset
+            } else {
+                levelCell.levelLabel.text = "No data"
+            }
             levelCell.levelLabel.textColor = .black
             levelCell.backgroundLabel.backgroundColor = randomColor()
-            let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 20) * randomNumber)
-            levelCell.rightConstraint.constant = rightInset
+            levelCell.cellHeight.constant = 20
+            levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
             return levelCell
-        case 18:
+        case skillsCount + 3:
             let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
             levelCell.cellHeight.constant = 30
             levelCell.levelLabel.text = "Projects"
@@ -176,16 +184,23 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
             levelCell.levelLabel.textColor = .white
             levelCell.rightConstraint.constant = 0
             return levelCell
-        case 19...numberOfProjects + 19:
+        case skillsCount + 4...projectsCount + skillsCount + 3:
             let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
-            let randomNumber = CGFloat(Int.random(in: 0...125))
+            if let project = userData?.projects[indexPath.row - (skillsCount + 4)] {
+                let possibleParent = project.projectIsInPiscine ? "\(userData?.projectNames[project.projectParentID!] ?? "No data") " : ""
+                levelCell.levelLabel.text = possibleParent + "\(project.projectName) - \(project.projectFinalMark)"
+                levelCell.backgroundLabel.backgroundColor = project.projectIsValidated ? #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1) : #colorLiteral(red: 0.9411764741, green: 0.4980392158, blue: 0.3529411852, alpha: 1)
+                if project.projectFinalMark != "0", project.projectFinalMark != "-42" {
+                    let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 125) * CGFloat(Double(project.projectFinalMark) ?? 0))
+                    levelCell.rightConstraint.constant = rightInset
+                }
+            } else {
+                levelCell.levelLabel.text = "No data"
+                levelCell.backgroundLabel.backgroundColor = coalitionColor
+            }
+            levelCell.levelLabel.textColor = .black
             levelCell.cellHeight.constant = 20
             levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
-            levelCell.levelLabel.text = "Project name - \(String(format: "%.f", randomNumber))"
-            levelCell.levelLabel.textColor = .black
-            levelCell.backgroundLabel.backgroundColor = indexPath.row % 2 == 0 ? #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1) : #colorLiteral(red: 0.9411764741, green: 0.4980392158, blue: 0.3529411852, alpha: 1)
-            let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 125) * randomNumber)
-            levelCell.rightConstraint.constant = rightInset
             return levelCell
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! InfoTableViewCell
