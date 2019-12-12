@@ -56,6 +56,7 @@ class SecondViewController: UIViewController {
     
     var userData : JSON?
     var topInset : CGFloat?
+    var coalitionColor : UIColor = #colorLiteral(red: 0.8078431487, green: 0.02745098062, blue: 0.3333333433, alpha: 1)
     
     var username : String = "svovchyn"
     var emailText : String = "svovchyn@unit.facroty.ua"
@@ -63,9 +64,10 @@ class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.estimatedRowHeight = 50
+//        tableView.estimatedRowHeight = 50
         tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
-        tableView.backgroundColor = UIColor.darkGray
+        tableView.backgroundColor = .clear
+        tableView.register(UINib(nibName: "LevelTableViewCell", bundle: nil), forCellReuseIdentifier: "levelCell")
         
         imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 300)
         imageView.image = UIImage(named: "svovchyn")
@@ -75,13 +77,13 @@ class SecondViewController: UIViewController {
         
         usernameLabel.text = username
         usernameLabel.frame = CGRect(x: 10, y: 265, width: 0, height: 0)
-        usernameLabel.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+        usernameLabel.backgroundColor = coalitionColor
         usernameLabel.textColor = .white
         specialView.addSubview(usernameLabel)
         
         emailLabel.text = emailText
         emailLabel.frame = CGRect(x: 10, y: 300, width: 0, height: 0)
-        emailLabel.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+        emailLabel.backgroundColor = coalitionColor
         emailLabel.textColor = .white
         specialView.addSubview(emailLabel)
         
@@ -89,7 +91,7 @@ class SecondViewController: UIViewController {
         backButton.layer.cornerRadius = 25
         backButton.setTitle("<", for: .normal)
         backButton.setTitleColor(.white, for: .normal)
-        backButton.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+        backButton.backgroundColor = coalitionColor
         backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
         specialView.addSubview(backButton)
         
@@ -97,7 +99,7 @@ class SecondViewController: UIViewController {
         availabilityLabel.sizeToFit()
         let labelWidth = availabilityLabel.frame.size.width
         availabilityLabel.frame.origin = CGPoint(x: UIScreen.main.bounds.size.width - labelWidth - 10, y: 10 + (topInset ?? 0))
-        availabilityLabel.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+        availabilityLabel.backgroundColor = coalitionColor
         availabilityLabel.textColor = .white
         specialView.addSubview(availabilityLabel)
 
@@ -121,9 +123,19 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! InfoTableViewCell
-        cell.myCellLabel.text = "some random data"
-        return cell
+        switch indexPath.row {
+        case 0:
+            let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
+            levelCell.levelLabel.text = "level - 10,45%"
+            levelCell.backgroundLabel.backgroundColor = coalitionColor
+            let rightInset = UIScreen.main.bounds.size.width - (UIScreen.main.bounds.size.width / 21) * 10.45
+            levelCell.rightConstraint.constant = rightInset
+            return levelCell
+        default:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! InfoTableViewCell
+            cell.myCellLabel.text = "some random data"
+            return cell
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
