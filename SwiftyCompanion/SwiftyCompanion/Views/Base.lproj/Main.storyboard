@@ -85,20 +85,25 @@
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="NNf-N4-36R" customClass="InfoTableViewCell" customModule="SwiftyCompanion" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NNf-N4-36R" id="COl-Hj-qwY">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7HU-UA-Eaa">
-                                                            <rect key="frame" x="29" y="11" width="365" height="21"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7HU-UA-Eaa">
+                                                            <rect key="frame" x="29" y="11" width="365" height="21.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="7HU-UA-Eaa" firstAttribute="leading" secondItem="COl-Hj-qwY" secondAttribute="leadingMargin" constant="9" id="2eK-nG-Lua"/>
+                                                        <constraint firstAttribute="bottomMargin" secondItem="7HU-UA-Eaa" secondAttribute="bottom" constant="0.5" id="cGd-YY-kbM"/>
+                                                        <constraint firstItem="7HU-UA-Eaa" firstAttribute="trailing" secondItem="COl-Hj-qwY" secondAttribute="trailingMargin" id="lge-NG-BFq"/>
+                                                        <constraint firstItem="7HU-UA-Eaa" firstAttribute="top" secondItem="COl-Hj-qwY" secondAttribute="topMargin" id="yKg-pE-p7A"/>
+                                                    </constraints>
                                                 </tableViewCellContentView>
                                                 <connections>
                                                     <outlet property="myCellLabel" destination="7HU-UA-Eaa" id="aQG-1V-xIc"/>
@@ -132,6 +137,7 @@
                     <navigationItem key="navigationItem" title="User's Profile" id="fjR-7d-xLh"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="generalView" destination="Ipd-QF-xQk" id="NPF-bT-MNR"/>
                         <outlet property="specialView" destination="j52-Ae-TpP" id="b4L-Tz-lTN"/>
                         <outlet property="tableView" destination="ZQJ-SM-leV" id="61j-5Z-8xA"/>
                     </connections>

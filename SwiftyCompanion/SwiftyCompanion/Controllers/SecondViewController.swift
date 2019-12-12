@@ -9,27 +9,63 @@
 import UIKit
 import SwiftyJSON
 
+class myLabel: UILabel {
+    
+    var textInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+    
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)!
+        self.commonInit()
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.commonInit()
+    }
+    
+    func commonInit() {
+        self.layer.cornerRadius = 5
+        self.textAlignment = .center
+        self.clipsToBounds = true
+        self.sizeToFit()
+    }
+    
+    override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
+        let insetRect = bounds.inset(by: textInsets)
+        let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
+        let invertedInsets = UIEdgeInsets(top: -textInsets.top, left: -textInsets.left, bottom: -textInsets.bottom, right: -textInsets.right)
+        return textRect.inset(by: invertedInsets)
+    }
+    
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: textInsets))
+    }
+    
+}
+
 class SecondViewController: UIViewController {
     
+    @IBOutlet var generalView: UIView!
     @IBOutlet weak var specialView: UIView!
     @IBOutlet weak var tableView: UITableView!
     let imageView = UIImageView()
-    let usernameLabel = UILabel()
-    let emailLabel = UILabel()
+    let usernameLabel = myLabel()
+    let emailLabel = myLabel()
+    let availabilityLabel = myLabel()
     let backButton = UIButton()
-
+    
     var userData : JSON?
+    var topInset : CGFloat?
+    
+    var username : String = "svovchyn"
+    var emailText : String = "svovchyn@unit.facroty.ua"
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.isHidden = false
-        
-        navigationController?.title = "svovchyn's info"
         
         tableView.estimatedRowHeight = 50
         tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
         tableView.backgroundColor = UIColor.darkGray
-        
         
         imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 300)
         imageView.image = UIImage(named: "svovchyn")
@@ -37,27 +73,41 @@ class SecondViewController: UIViewController {
         imageView.clipsToBounds = true
         specialView.addSubview(imageView)
         
-        usernameLabel.frame = CGRect(x: 10, y: 270, width: UIScreen.main.bounds.size.width, height: 30)
-        usernameLabel.text = "Stepan Vovchynudzinskyi"
-        usernameLabel.textColor = UIColor.white
+        usernameLabel.text = username
+        usernameLabel.frame = CGRect(x: 10, y: 265, width: 0, height: 0)
+        usernameLabel.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+        usernameLabel.textColor = .white
         specialView.addSubview(usernameLabel)
         
-        emailLabel.frame = CGRect(x: 10, y: 300, width: UIScreen.main.bounds.size.width, height: 30)
-        emailLabel.text = "svovchyn@unit.facroty.ua"
-        emailLabel.textColor = UIColor.white
+        emailLabel.text = emailText
+        emailLabel.frame = CGRect(x: 10, y: 300, width: 0, height: 0)
+        emailLabel.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+        emailLabel.textColor = .white
         specialView.addSubview(emailLabel)
         
-        backButton.frame = CGRect(x: 10, y: 10 + 44, width: 50, height: 50)
+        backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
         backButton.layer.cornerRadius = 25
-        backButton.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        backButton.setTitle("<", for: .normal)
+        backButton.setTitleColor(.white, for: .normal)
+        backButton.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
         backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
         specialView.addSubview(backButton)
+        
+        availabilityLabel.text = "Unavailable"
+        availabilityLabel.sizeToFit()
+        let labelWidth = availabilityLabel.frame.size.width
+        availabilityLabel.frame.origin = CGPoint(x: UIScreen.main.bounds.size.width - labelWidth - 10, y: 10 + (topInset ?? 0))
+        availabilityLabel.backgroundColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+        availabilityLabel.textColor = .white
+        specialView.addSubview(availabilityLabel)
 
     }
+
     
     @objc func backButtonClicked() {
         navigationController?.popViewController(animated: true)
     }
+    
 }
 
 extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
@@ -80,14 +130,18 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
         let y = 300 - (scrollView.contentOffset.y + 300)
         let height = min(max(y, 200), 400)
         imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: height)
-        emailLabel.frame = CGRect(x: 10, y: y - 44, width: UIScreen.main.bounds.size.width, height: 30)
-        usernameLabel.frame = CGRect(x: 10, y: y - 74, width: UIScreen.main.bounds.size.width, height: 30)
+        emailLabel.frame = CGRect(x: 10, y: y - 44, width: 0, height: 0)
+        usernameLabel.frame = CGRect(x: 10, y: y - 79, width: 0, height: 0)
+        usernameLabel.sizeToFit()
+        emailLabel.sizeToFit()
         if scrollView.contentOffset.y < -400 {
             scrollView.contentOffset.y = -400
         }
         if scrollView.contentOffset.y > -200 {
-            emailLabel.frame = CGRect(x: 10, y: 156, width: UIScreen.main.bounds.size.width, height: 30)
-            usernameLabel.frame = CGRect(x: 10, y: 126, width: UIScreen.main.bounds.size.width, height: 30)
+            emailLabel.frame = CGRect(x: 10, y: 156, width: 0, height: 0)
+            usernameLabel.frame = CGRect(x: 10, y: 121, width: 0, height: 0)
+            usernameLabel.sizeToFit()
+            emailLabel.sizeToFit()
         }
     }
 

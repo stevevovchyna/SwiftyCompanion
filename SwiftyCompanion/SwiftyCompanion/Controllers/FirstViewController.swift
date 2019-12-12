@@ -69,8 +69,9 @@ class FirstViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showUserData" {
-            let constroller = segue.destination as! SecondViewController
-            constroller.userData = userData
+            let controller = segue.destination as! SecondViewController
+            controller.userData = userData
+            controller.topInset = view.safeAreaInsets.top
         }
     }
     
