@@ -64,6 +64,8 @@ class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        specialView.backgroundColor = coalitionColor
+        
         tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
         tableView.backgroundColor = .clear
         tableView.register(UINib(nibName: "LevelTableViewCell", bundle: nil), forCellReuseIdentifier: "levelCell")
@@ -105,9 +107,12 @@ class SecondViewController: UIViewController {
 
     }
 
-    
     @objc func backButtonClicked() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    func randomColor() -> UIColor {
+        return UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1.0)
     }
     
 }
@@ -115,7 +120,7 @@ class SecondViewController: UIViewController {
 extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 50
+        return 17 + 77
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -123,10 +128,12 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let numberOfProjects = 77
         switch indexPath.row {
         case 0:
             let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
             levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
+            levelCell.cellHeight.constant = 44
             levelCell.levelLabel.text = "level - 10,45%"
             levelCell.backgroundLabel.backgroundColor = coalitionColor
             let rightInset = UIScreen.main.bounds.size.width - (UIScreen.main.bounds.size.width / 21) * 10.45
@@ -134,7 +141,7 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
             return levelCell
         case 1:
             let generalCell = tableView.dequeueReusableCell(withIdentifier: "generalDataCell", for: indexPath) as! GeneralDataTableViewCell
-            generalCell.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 0.7928617295)
+            generalCell.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 0.5)
             generalCell.fullNameLabel.text = "Stepan Vovchyna"
             generalCell.phoneNumberLabel.text = "+380936579161"
             generalCell.evaluationPointsLabel.text = "10"
@@ -142,6 +149,44 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
             generalCell.walletLabel.text = "75"
             generalCell.poolYearLabel.text = "2018"
             return generalCell
+        case 2:
+            let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
+            levelCell.cellHeight.constant = 30
+            levelCell.levelLabel.text = "Skills"
+            levelCell.backgroundLabel.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            levelCell.levelLabel.textColor = .white
+            levelCell.rightConstraint.constant = 0
+            return levelCell
+        case 3...17:
+            let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
+            let randomNumber = CGFloat(Int.random(in: 0...20))
+            levelCell.cellHeight.constant = 20
+            levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
+            levelCell.levelLabel.text = "skill name - \(String(format: "%.f", randomNumber))"
+            levelCell.levelLabel.textColor = .black
+            levelCell.backgroundLabel.backgroundColor = randomColor()
+            let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 20) * randomNumber)
+            levelCell.rightConstraint.constant = rightInset
+            return levelCell
+        case 18:
+            let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
+            levelCell.cellHeight.constant = 30
+            levelCell.levelLabel.text = "Projects"
+            levelCell.backgroundLabel.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            levelCell.levelLabel.textColor = .white
+            levelCell.rightConstraint.constant = 0
+            return levelCell
+        case 19...numberOfProjects + 19:
+            let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
+            let randomNumber = CGFloat(Int.random(in: 0...125))
+            levelCell.cellHeight.constant = 20
+            levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
+            levelCell.levelLabel.text = "Project name - \(String(format: "%.f", randomNumber))"
+            levelCell.levelLabel.textColor = .black
+            levelCell.backgroundLabel.backgroundColor = indexPath.row % 2 == 0 ? #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1) : #colorLiteral(red: 0.9411764741, green: 0.4980392158, blue: 0.3529411852, alpha: 1)
+            let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 125) * randomNumber)
+            levelCell.rightConstraint.constant = rightInset
+            return levelCell
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! InfoTableViewCell
             cell.myCellLabel.text = "some random data"

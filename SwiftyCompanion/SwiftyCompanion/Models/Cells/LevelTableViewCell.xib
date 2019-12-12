@@ -44,6 +44,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="backgroundLabel" destination="0oF-9w-ezE" id="vQC-lU-Fuq"/>
+                <outlet property="cellHeight" destination="a82-jo-uGY" id="b3K-qt-v2k"/>
                 <outlet property="levelLabel" destination="adt-at-wap" id="wfY-4b-2im"/>
                 <outlet property="rightConstraint" destination="Ld6-AZ-ifs" id="6Fn-mW-E9V"/>
             </connections>
