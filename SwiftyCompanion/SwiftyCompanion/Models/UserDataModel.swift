@@ -45,7 +45,6 @@ class DownloadOperation : Operation {
                 completionHandler(data, response, error)
             }
             self?.state = .finished
-            print("done!!!")
         })
     }
 
@@ -179,11 +178,17 @@ class UserData {
         for skill in userData["cursus_users"][0]["skills"] {
             skills.append(Skill(skill: skill.1))
         }
+        skills.sort {
+            $0.skillName < $1.skillName
+        }
         projects = []
         for project in userData["projects_users"] {
             if project.1["cursus_ids"][0].stringValue == "1", project.1["validated?"].stringValue != "" {
                 projects.append(Project(project: project.1))
             }
+        }
+        projects.sort {
+            $0.projectName < $1.projectName
         }
         uniqueIDs = UserData.getRushIDs(projects: projects)
     }
