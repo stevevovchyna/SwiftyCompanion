@@ -47,20 +47,4 @@ class OAuthManager {
             }
         }
     }
-    
-    static func searchPiscine(query: String, token: String, completionHandler: @escaping (Result<[String: Any]>) -> Void) {
-        let urlQuery = "https://api.intra.42.fr/v2/projects/" + query
-        let header = ["Authorization" : "Bearer " + token]
-        Alamofire.request(urlQuery, method: .get, parameters: self.parameters, headers: header).responseJSON { response in
-            switch response.result {
-            case .success(let value as [String: Any]):
-                completionHandler(.success(value))
-            case .failure(let error):
-                completionHandler(.failure(error))
-            default:
-                fatalError("received non-dictionary JSON response")
-            }
-        }
-    }
-    
 }

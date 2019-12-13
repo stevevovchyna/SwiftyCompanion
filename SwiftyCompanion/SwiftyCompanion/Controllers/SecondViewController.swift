@@ -9,40 +9,6 @@
 import UIKit
 import SwiftyJSON
 
-class myLabel: UILabel {
-    
-    var textInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-    
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)!
-        self.commonInit()
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.commonInit()
-    }
-    
-    func commonInit() {
-        self.layer.cornerRadius = 5
-        self.textAlignment = .center
-        self.clipsToBounds = true
-        self.sizeToFit()
-    }
-    
-    override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
-        let insetRect = bounds.inset(by: textInsets)
-        let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
-        let invertedInsets = UIEdgeInsets(top: -textInsets.top, left: -textInsets.left, bottom: -textInsets.bottom, right: -textInsets.right)
-        return textRect.inset(by: invertedInsets)
-    }
-    
-    override func drawText(in rect: CGRect) {
-        super.drawText(in: rect.inset(by: textInsets))
-    }
-    
-}
-
 class SecondViewController: UIViewController {
     
     @IBOutlet var generalView: UIView!
@@ -63,8 +29,6 @@ class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        userData?.description()
-        
         specialView.backgroundColor = coalitionColor
         
         tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
@@ -73,26 +37,23 @@ class SecondViewController: UIViewController {
         tableView.register(UINib(nibName: "GeneralDataTableViewCell", bundle: nil), forCellReuseIdentifier: "generalDataCell")
         
         imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 300)
-
         if let imageData = self.userImage?.imageData {
             self.imageView.image = UIImage(data: imageData)
         }
-
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         specialView.addSubview(imageView)
-        
-        usernameLabel.text = userData?.username
-        usernameLabel.frame = CGRect(x: 10, y: 265, width: 0, height: 0)
-        usernameLabel.backgroundColor = coalitionColor
-        usernameLabel.textColor = .white
-        specialView.addSubview(usernameLabel)
-        
-        emailLabel.text = userData?.email
-        emailLabel.frame = CGRect(x: 10, y: 300, width: 0, height: 0)
-        emailLabel.backgroundColor = coalitionColor
-        emailLabel.textColor = .white
-        specialView.addSubview(emailLabel)
+
+        addLabel(withLabel: usernameLabel,
+                 withText: userData?.username ?? "No data",
+                 withCGRect: CGRect(x: 10, y: 265, width: 0, height: 0),
+                 withColor: coalitionColor,
+                 toView: specialView)
+        addLabel(withLabel: emailLabel,
+                 withText: userData?.email ?? "No data",
+                 withCGRect: CGRect(x: 10, y: 300, width: 0, height: 0),
+                 withColor: coalitionColor,
+                 toView: specialView)
         
         backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
         backButton.layer.cornerRadius = 25
@@ -109,15 +70,25 @@ class SecondViewController: UIViewController {
         availabilityLabel.backgroundColor = coalitionColor
         availabilityLabel.textColor = .white
         specialView.addSubview(availabilityLabel)
-
-    }
-
-    @objc func backButtonClicked() {
-        navigationController?.popViewController(animated: true)
     }
     
-    func randomColor() -> UIColor {
-        return UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1.0)
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let y = 300 - (scrollView.contentOffset.y + 300)
+        let height = min(max(y, 200), 400)
+        imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: height)
+        emailLabel.frame = CGRect(x: 10, y: y - 44, width: 0, height: 0)
+        usernameLabel.frame = CGRect(x: 10, y: y - 79, width: 0, height: 0)
+        usernameLabel.sizeToFit()
+        emailLabel.sizeToFit()
+        if scrollView.contentOffset.y < -400 {
+            scrollView.contentOffset.y = -400
+        }
+        if scrollView.contentOffset.y > -200 {
+            emailLabel.frame = CGRect(x: 10, y: 156, width: 0, height: 0)
+            usernameLabel.frame = CGRect(x: 10, y: 121, width: 0, height: 0)
+            usernameLabel.sizeToFit()
+            emailLabel.sizeToFit()
+        }
     }
     
 }
@@ -161,25 +132,9 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.cellForRow(at: indexPath)?.isSelected = false
     }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let y = 300 - (scrollView.contentOffset.y + 300)
-        let height = min(max(y, 200), 400)
-        imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: height)
-        emailLabel.frame = CGRect(x: 10, y: y - 44, width: 0, height: 0)
-        usernameLabel.frame = CGRect(x: 10, y: y - 79, width: 0, height: 0)
-        usernameLabel.sizeToFit()
-        emailLabel.sizeToFit()
-        if scrollView.contentOffset.y < -400 {
-            scrollView.contentOffset.y = -400
-        }
-        if scrollView.contentOffset.y > -200 {
-            emailLabel.frame = CGRect(x: 10, y: 156, width: 0, height: 0)
-            usernameLabel.frame = CGRect(x: 10, y: 121, width: 0, height: 0)
-            usernameLabel.sizeToFit()
-            emailLabel.sizeToFit()
-        }
-    }
+}
+
+extension SecondViewController {
     
     func dividerCell(withName cellName: String, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
@@ -245,5 +200,24 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
         levelCell.cellHeight.constant = 20
         levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
         return levelCell
+    }
+    
+}
+
+extension SecondViewController {
+    func addLabel(withLabel usernameLabel: UILabel, withText labelText: String, withCGRect rect: CGRect, withColor color: UIColor, toView: UIView) {
+        usernameLabel.text = labelText
+        usernameLabel.frame = rect
+        usernameLabel.backgroundColor = color
+        usernameLabel.textColor = .white
+        toView.addSubview(usernameLabel)
+    }
+
+    @objc func backButtonClicked() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    func randomColor() -> UIColor {
+        return UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1.0)
     }
 }

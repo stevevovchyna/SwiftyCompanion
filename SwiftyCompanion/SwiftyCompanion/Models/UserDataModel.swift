@@ -10,61 +10,73 @@ import Foundation
 import SwiftyJSON
 import Alamofire
 
-class DownloadOperation : Operation {
+class UserData {
     
-    private var task : URLSessionDataTask!
+    let username : String
+    let email : String
+    var availableAt : String
+    let level : String
+    let phone : String
+    let firstName : String
+    let lastName : String
+    let wallets : String
+    let evaluationPoints : String
+    let grade : String
+    let poolYear : String
+    var skills : [Skill]
+    var projects : [Project]
     
-    enum OperationState : Int {
-        case ready
-        case executing
-        case finished
-    }
+    var uniqueIDs : [String]
+    var userImageURL : String
     
-    private var state : OperationState = .ready {
-        willSet {
-            self.willChangeValue(forKey: "isExecuting")
-            self.willChangeValue(forKey: "isFinished")
+    init(userData : JSON) {
+        username = userData["login"].stringValue
+        email = userData["email"].stringValue
+        availableAt = userData["location"].stringValue
+        if availableAt == "" {
+            availableAt = "Unavailable"
         }
-        
-        didSet {
-            self.didChangeValue(forKey: "isExecuting")
-            self.didChangeValue(forKey: "isFinished")
+        level = userData["cursus_users"][0]["level"].stringValue
+        phone = userData["phone"].stringValue
+        firstName = userData["first_name"].stringValue
+        lastName = userData["last_name"].stringValue
+        wallets = userData["wallet"].stringValue
+        evaluationPoints = userData["correction_point"].stringValue
+        grade = userData["cursus_users"][0]["grade"].stringValue
+        poolYear = userData["pool_year"].stringValue
+        userImageURL = userData["image_url"].stringValue
+        skills = []
+        for skill in userData["cursus_users"][0]["skills"] {
+            skills.append(Skill(skill: skill.1))
         }
-    }
-    
-    override var isReady: Bool { return state == .ready }
-    override var isExecuting: Bool { return state == .executing }
-    override var isFinished: Bool { return state == .finished }
-  
-    init(session: URLSession, dataTaskURLRequest: URLRequest, completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) {
-        super.init()
-        
-        task = session.dataTask(with: dataTaskURLRequest, completionHandler: { [weak self] (data, response, error) in
-
-            if let completionHandler = completionHandler {
-                completionHandler(data, response, error)
+        skills.sort {
+            $0.skillName < $1.skillName
+        }
+        projects = []
+        for project in userData["projects_users"] {
+            if project.1["cursus_ids"][0].stringValue == "1", project.1["validated?"].stringValue != "" {
+                projects.append(Project(project: project.1))
             }
-            self?.state = .finished
-        })
-    }
-
-    override func start() {
-        if self.isCancelled {
-            state = .finished
-            return
         }
-        state = .executing
-        self.task.resume()
+        projects.sort {
+            $0.projectName < $1.projectName
+        }
+        uniqueIDs = UserData.getRushIDs(projects: projects)
     }
-
-    override func cancel() {
-        super.cancel()
-        self.task.cancel()
+    
+    static func getRushIDs(projects: [Project]) -> [String] {
+        var IDs : [String] = []
+        for id in projects {
+            if let i = id.projectParentID {
+                IDs.append(i)
+            }
+        }
+        let uniqueIDs = Array(Set(IDs))
+        return uniqueIDs
     }
 }
 
 class Project {
-    
     let projectName : String
     let projectStatus : String
     let projectIsValidated : Bool
@@ -134,77 +146,5 @@ class ProjectNames {
             queue.addOperation(operation)
         }
         handler()
-    }
-}
-
-class UserData {
-    
-    let token : String
-    let username : String
-    let email : String
-    var availableAt : String
-    let level : String
-    let phone : String
-    let firstName : String
-    let lastName : String
-    let wallets : String
-    let evaluationPoints : String
-    let grade : String
-    let poolYear : String
-    var skills : [Skill]
-    var projects : [Project]
-    
-    var uniqueIDs : [String]
-    var userImageURL : String
-    
-    init(userData : JSON, APIToken : String) {
-        token = APIToken
-        username = userData["login"].stringValue
-        email = userData["email"].stringValue
-        availableAt = userData["location"].stringValue
-        if availableAt == "" {
-            availableAt = "Unavailable"
-        }
-        level = userData["cursus_users"][0]["level"].stringValue
-        phone = userData["phone"].stringValue
-        firstName = userData["first_name"].stringValue
-        lastName = userData["last_name"].stringValue
-        wallets = userData["wallet"].stringValue
-        evaluationPoints = userData["correction_point"].stringValue
-        grade = userData["cursus_users"][0]["grade"].stringValue
-        poolYear = userData["pool_year"].stringValue
-        userImageURL = userData["image_url"].stringValue
-        skills = []
-        for skill in userData["cursus_users"][0]["skills"] {
-            skills.append(Skill(skill: skill.1))
-        }
-        skills.sort {
-            $0.skillName < $1.skillName
-        }
-        projects = []
-        for project in userData["projects_users"] {
-            if project.1["cursus_ids"][0].stringValue == "1", project.1["validated?"].stringValue != "" {
-                projects.append(Project(project: project.1))
-            }
-        }
-        projects.sort {
-            $0.projectName < $1.projectName
-        }
-        uniqueIDs = UserData.getRushIDs(projects: projects)
-    }
-    
-    static func getRushIDs(projects: [Project]) -> [String] {
-        var IDs : [String] = []
-        for id in projects {
-            if let i = id.projectParentID {
-                IDs.append(i)
-            }
-        }
-        let uniqueIDs = Array(Set(IDs))
-        return uniqueIDs
-    }
-    
-    func description() {
-        print(username, email, availableAt, level, phone, firstName, lastName, wallets, evaluationPoints, grade, poolYear, skills, projects)
     }
 }

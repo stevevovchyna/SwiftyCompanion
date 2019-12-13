@@ -23,30 +23,27 @@ class FirstViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        searchTextField.text = "svovchyn"
+        searchTextField.text = "svovchyn"
         
-        navigationController?.navigationBar.isHidden = true
-        searchUserDataButtonLabel.isHidden = true
-        OAuthManager.getToken { result in
-            switch result {
-            case .success(let newToken):
-                self.token = (newToken["access_token"] as! String)
-                print(self.token ?? "tokena netu")
-                UIView.animate(withDuration: 1) {
-                    self.searchUserDataButtonLabel.isHidden = false
-                }
-            case .failure(let error):
-                print(error)
-                self.presentAlert(text: error.localizedDescription)
-            }
-        }
-//        token = "6aaa77234f2e16d6bcbba6b3671043ba8a2a35ece36ec82fa3482b934076155e"
+//        searchUserDataButtonLabel.isHidden = true
+//        OAuthManager.getToken { result in
+//            switch result {
+//            case .success(let newToken):
+//                self.token = (newToken["access_token"] as! String)
+//                print(self.token ?? "tokena netu")
+//                UIView.animate(withDuration: 1) {
+//                    self.searchUserDataButtonLabel.isHidden = false
+//                }
+//            case .failure(let error):
+//                print(error)
+//                self.presentAlert(text: error.localizedDescription)
+//            }
+//        }
+        token = "ff72dee9793d2b8474256debc3bb51de567bbf2397fa39408665298663185107"
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.navigationBar.isHidden = true
-    }
-    
+}
+
+extension FirstViewController {
     
     @IBAction func searchUserDataButton(_ sender: UIButton) {
         if searchTextField.text != "" {
@@ -54,7 +51,7 @@ class FirstViewController: UIViewController {
                 switch result {
                 case .success(let userData):
                     if userData.count > 0 {
-                        self.userData = UserData(userData: JSON(userData), APIToken: self.token ?? "")
+                        self.userData = UserData(userData: JSON(userData))
                         self.projectNames = ProjectNames(uniqueIDs: self.userData?.uniqueIDs ?? [""], token: self.token ?? "") {
                             self.userImage = UserImage(imageUrl: self.userData?.userImageURL ?? "") {
                                 self.performSegue(withIdentifier: "showUserData", sender: self)
