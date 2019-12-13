@@ -43,9 +43,9 @@ class SecondViewController: UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         specialView.addSubview(imageView)
-
+        
         addLabel(withLabel: usernameLabel,
-                 withText: userData?.username ?? "No data",
+                 withText: "\(userData?.username ?? "No data") - \(userData?.availableAt ?? "Unavailable")",
                  withCGRect: CGRect(x: 10, y: 265, width: 0, height: 0),
                  withColor: coalitionColor,
                  toView: specialView)
@@ -54,6 +54,7 @@ class SecondViewController: UIViewController {
                  withCGRect: CGRect(x: 10, y: 300, width: 0, height: 0),
                  withColor: coalitionColor,
                  toView: specialView)
+
         
         backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
         backButton.layer.cornerRadius = 25
@@ -62,14 +63,6 @@ class SecondViewController: UIViewController {
         backButton.backgroundColor = coalitionColor
         backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
         specialView.addSubview(backButton)
-        
-        availabilityLabel.text = userData?.availableAt ?? "Unavailable"
-        availabilityLabel.sizeToFit()
-        let labelWidth = availabilityLabel.frame.size.width
-        availabilityLabel.frame.origin = CGPoint(x: UIScreen.main.bounds.size.width - labelWidth - 10, y: 10 + (topInset ?? 0))
-        availabilityLabel.backgroundColor = coalitionColor
-        availabilityLabel.textColor = .white
-        specialView.addSubview(availabilityLabel)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
