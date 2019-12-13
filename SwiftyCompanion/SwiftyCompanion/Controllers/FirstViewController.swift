@@ -14,6 +14,8 @@ class FirstViewController: UIViewController {
     
     var token : String?
     var userData : UserData?
+    var userImage : UserImage?
+    var projectNames : ProjectNames?
 
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchUserDataButtonLabel: UIButton!
@@ -24,21 +26,21 @@ class FirstViewController: UIViewController {
         searchTextField.text = "svovchyn"
         
         navigationController?.navigationBar.isHidden = true
-//        searchUserDataButtonLabel.isHidden = true
-//        OAuthManager.getToken { result in
-//            switch result {
-//            case .success(let newToken):
-//                self.token = (newToken["access_token"] as! String)
-//                print(self.token ?? "tokena netu")
-//                UIView.animate(withDuration: 1) {
-//                    self.searchUserDataButtonLabel.isHidden = false
-//                }
-//            case .failure(let error):
-//                print(error)
-//                self.presentAlert(text: error.localizedDescription)
-//            }
-//        }
-        token = "6aaa77234f2e16d6bcbba6b3671043ba8a2a35ece36ec82fa3482b934076155e"
+        searchUserDataButtonLabel.isHidden = true
+        OAuthManager.getToken { result in
+            switch result {
+            case .success(let newToken):
+                self.token = (newToken["access_token"] as! String)
+                print(self.token ?? "tokena netu")
+                UIView.animate(withDuration: 1) {
+                    self.searchUserDataButtonLabel.isHidden = false
+                }
+            case .failure(let error):
+                print(error)
+                self.presentAlert(text: error.localizedDescription)
+            }
+        }
+//        token = "6aaa77234f2e16d6bcbba6b3671043ba8a2a35ece36ec82fa3482b934076155e"
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -53,7 +55,11 @@ class FirstViewController: UIViewController {
                 case .success(let userData):
                     if userData.count > 0 {
                         self.userData = UserData(userData: JSON(userData), APIToken: self.token ?? "")
-                        self.performSegue(withIdentifier: "showUserData", sender: self)
+                        self.projectNames = ProjectNames(uniqueIDs: self.userData?.uniqueIDs ?? [""], token: self.token ?? "") {
+                            self.userImage = UserImage(imageUrl: self.userData?.userImageURL ?? "") {
+                                self.performSegue(withIdentifier: "showUserData", sender: self)
+                            }
+                        }
                     } else {
                         self.presentAlert(text: "User not found!")
                     }
@@ -71,6 +77,8 @@ class FirstViewController: UIViewController {
         if segue.identifier == "showUserData" {
             let controller = segue.destination as! SecondViewController
             controller.userData = userData
+            controller.userImage = userImage
+            controller.projectNames = projectNames
             controller.topInset = view.safeAreaInsets.top
         }
     }

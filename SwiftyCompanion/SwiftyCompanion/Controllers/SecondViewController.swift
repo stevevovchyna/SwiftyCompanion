@@ -55,6 +55,8 @@ class SecondViewController: UIViewController {
     let backButton = UIButton()
     
     var userData : UserData?
+    var userImage : UserImage?
+    var projectNames : ProjectNames?
     var topInset : CGFloat?
     var coalitionColor : UIColor = #colorLiteral(red: 0.4692698717, green: 0.6561034322, blue: 0.4752988815, alpha: 0.8)
 
@@ -71,11 +73,11 @@ class SecondViewController: UIViewController {
         tableView.register(UINib(nibName: "GeneralDataTableViewCell", bundle: nil), forCellReuseIdentifier: "generalDataCell")
         
         imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 300)
-//        imageView.image = UIImage(named: "svovchyn")
-        DispatchQueue.main.async {
-            self.imageView.image = UIImage(data: self.userData!.userImage)
-            print("privetiki")
+
+        if let imageData = self.userImage?.imageData {
+            self.imageView.image = UIImage(data: imageData)
         }
+
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         specialView.addSubview(imageView)
@@ -100,7 +102,7 @@ class SecondViewController: UIViewController {
         backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
         specialView.addSubview(backButton)
         
-        availabilityLabel.text = "Unavailable"
+        availabilityLabel.text = userData?.availableAt ?? "Unavailable"
         availabilityLabel.sizeToFit()
         let labelWidth = availabilityLabel.frame.size.width
         availabilityLabel.frame.origin = CGPoint(x: UIScreen.main.bounds.size.width - labelWidth - 10, y: 10 + (topInset ?? 0))
@@ -184,10 +186,10 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
             levelCell.levelLabel.textColor = .white
             levelCell.rightConstraint.constant = 0
             return levelCell
-        case skillsCount + 4...projectsCount + skillsCount + 3:
+        case skillsCount + 4...projectsCount + skillsCount + 3 | 4:
             let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
             if let project = userData?.projects[indexPath.row - (skillsCount + 4)] {
-                let possibleParent = project.projectIsInPiscine ? "\(userData?.projectNames[project.projectParentID!] ?? "No data") " : ""
+                let possibleParent = project.projectIsInPiscine ? "\(projectNames?.entities[project.projectParentID!] ?? "No data") " : ""
                 levelCell.levelLabel.text = possibleParent + "\(project.projectName) - \(project.projectFinalMark)"
                 levelCell.backgroundLabel.backgroundColor = project.projectIsValidated ? #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1) : #colorLiteral(red: 0.9411764741, green: 0.4980392158, blue: 0.3529411852, alpha: 1)
                 if project.projectFinalMark != "0", project.projectFinalMark != "-42" {
@@ -231,5 +233,4 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
             emailLabel.sizeToFit()
         }
     }
-
 }

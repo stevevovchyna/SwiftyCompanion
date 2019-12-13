@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftyJSON
+import Alamofire
 
 class DownloadOperation : Operation {
     
@@ -97,6 +98,46 @@ class Skill {
     }
 }
 
+class UserImage {
+    var imageData : Data
+
+    init(imageUrl : String, handler: @escaping () -> ()) {
+        imageData = Data()
+        Alamofire.request(imageUrl).responseData { response in
+            if response.error == nil {
+                if let data = response.data {
+                    self.imageData = data
+                    handler()
+                }
+            }
+        }
+    }
+}
+
+class ProjectNames {
+    var entities: [String: String]
+    
+    init(uniqueIDs: [String], token: String, handler: @escaping () -> ()) {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        entities = [:]
+        for id in uniqueIDs {
+            let urlString = "https://api.intra.42.fr/v2/projects/" + id
+            let url = URL(string: urlString)
+            var request = URLRequest(url: url!)
+            request.httpMethod = "GET"
+            request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
+            let operation = DownloadOperation(session: URLSession.shared, dataTaskURLRequest: request, completionHandler: { (data, response, error) in
+                if let data = data {
+                    self.entities[id] = JSON(data)["name"].stringValue
+                }
+            })
+            queue.addOperation(operation)
+        }
+        handler()
+    }
+}
+
 class UserData {
     
     let token : String
@@ -113,15 +154,11 @@ class UserData {
     let poolYear : String
     var skills : [Skill]
     var projects : [Project]
-    var projectNames : [String: String]
+    
     var uniqueIDs : [String]
-    var userImage : Data
+    var userImageURL : String
     
     init(userData : JSON, APIToken : String) {
-        
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-        
         token = APIToken
         username = userData["login"].stringValue
         email = userData["email"].stringValue
@@ -137,6 +174,7 @@ class UserData {
         evaluationPoints = userData["correction_point"].stringValue
         grade = userData["cursus_users"][0]["grade"].stringValue
         poolYear = userData["pool_year"].stringValue
+        userImageURL = userData["image_url"].stringValue
         skills = []
         for skill in userData["cursus_users"][0]["skills"] {
             skills.append(Skill(skill: skill.1))
@@ -148,33 +186,6 @@ class UserData {
             }
         }
         uniqueIDs = UserData.getRushIDs(projects: projects)
-        projectNames = [:]
-        userImage = Data()
-            let urlString = userData["image_url"].stringValue
-            let url = URL(string: urlString)
-            var request = URLRequest(url: url!)
-            request.httpMethod = "GET"
-            let operation = DownloadOperation(session: URLSession.shared, dataTaskURLRequest: request, completionHandler: { (data, response, error) in
-                if let imageData = data {
-                    self.userImage = imageData
-                    print(imageData)
-                }
-            })
-            queue.addOperation(operation)
-        for id in uniqueIDs {
-            let urlString = "https://api.intra.42.fr/v2/projects/" + id
-            let url = URL(string: urlString)
-            var request = URLRequest(url: url!)
-            request.httpMethod = "GET"
-            request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
-            let operation = DownloadOperation(session: URLSession.shared, dataTaskURLRequest: request, completionHandler: { (data, response, error) in
-                if let data = data {
-                    self.projectNames[id] = JSON(data)["name"].stringValue
-                    print("darovki")
-                }
-            })
-            queue.addOperation(operation)
-        }
     }
     
     static func getRushIDs(projects: [Project]) -> [String] {
