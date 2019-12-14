@@ -26,14 +26,11 @@ class SecondViewController: UIViewController {
     var userCoalition : Coalition?
     var projectNames : ProjectNames?
     var topInset : CGFloat?
-    var coalitionColor : UIColor = #colorLiteral(red: 0.4692698717, green: 0.6561034322, blue: 0.4752988815, alpha: 0.8)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        coalitionColor = UIColor(hex: (userCoalition?.coalitionColor ?? "#CC82AD") + "ff") ?? #colorLiteral(red: 1, green: 0.8409949541, blue: 0.8371030092, alpha: 0.8)
-        
-        generalView.backgroundColor = coalitionColor
+        generalView.backgroundColor = userCoalition?.additionalColor1
         
         tableView.contentInset = UIEdgeInsets(top: 300 - (topInset ?? 0), left: 0, bottom: 0, right: 0)
         tableView.backgroundColor = .clear
@@ -50,19 +47,19 @@ class SecondViewController: UIViewController {
         addLabel(withLabel: usernameLabel,
                  withText: "\(userData?.username ?? "No data") - \(userData?.availableAt ?? "Unavailable")",
                  withCGRect: CGRect(x: 10, y: 265, width: 0, height: 0),
-                 withColor: coalitionColor,
+                 withColor: userCoalition!.additionalColor1,
                  toView: imageView)
         addLabel(withLabel: emailLabel,
                  withText: userData?.email ?? "No data",
                  withCGRect: CGRect(x: 10, y: 300, width: 0, height: 0),
-                 withColor: coalitionColor,
+                 withColor: userCoalition!.additionalColor1,
                  toView: imageView)
 
         backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
         backButton.layer.cornerRadius = 25
         backButton.setTitle("<", for: .normal)
         backButton.setTitleColor(.white, for: .normal)
-        backButton.backgroundColor = coalitionColor
+        backButton.backgroundColor = userCoalition?.additionalColor1
         backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
         generalView.addSubview(backButton)
         
@@ -149,10 +146,10 @@ extension SecondViewController {
     func levelCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
         let floatLevel = ((userData?.level ?? "0") as NSString).floatValue
-        levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
+        levelCell.backgroundColor = userCoalition?.mainColor
         levelCell.cellHeight.constant = 44
         levelCell.levelLabel.text = String(format: "%.2f%", floatLevel)
-        levelCell.backgroundLabel.backgroundColor = coalitionColor
+        levelCell.backgroundLabel.backgroundColor = userCoalition?.additionalColor1
         let rightInset = UIScreen.main.bounds.size.width - (UIScreen.main.bounds.size.width / 21) * CGFloat(floatLevel)
         levelCell.rightConstraint.constant = rightInset
         return levelCell
@@ -160,7 +157,7 @@ extension SecondViewController {
     
     func generalDataCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
         let generalDataCell = tableView.dequeueReusableCell(withIdentifier: "generalDataCell", for: indexPath) as! GeneralDataTableViewCell
-        generalDataCell.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 0.5)
+        generalDataCell.backgroundColor = userCoalition?.additionalColor2
         generalDataCell.fullNameLabel.text = "\(userData?.firstName ?? "Somebody") \(userData?.lastName ?? "Somebody")"
         generalDataCell.phoneNumberLabel.text = userData?.phone
         generalDataCell.evaluationPointsLabel.text = userData?.evaluationPoints
@@ -177,8 +174,8 @@ extension SecondViewController {
         levelCell.rightConstraint.constant = rightInset
         levelCell.levelLabel.textColor = .black
         levelCell.backgroundLabel.backgroundColor = randomColor()
-        levelCell.cellHeight.constant = 20
-        levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
+        levelCell.cellHeight.constant = 30
+        levelCell.backgroundColor = userCoalition?.mainColor
         return levelCell
     }
     
@@ -187,7 +184,7 @@ extension SecondViewController {
         if let project = userData?.projects[indexPath.row - (skillsCount + 4)] {
             let possibleParent = project.projectIsInPiscine ? "\(projectNames?.entities[project.projectParentID!] ?? "No data") " : ""
             levelCell.levelLabel.text = possibleParent + "\(project.projectName) - \(project.projectFinalMark)"
-            levelCell.backgroundLabel.backgroundColor = project.projectIsValidated ? #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1) : #colorLiteral(red: 0.9411764741, green: 0.4980392158, blue: 0.3529411852, alpha: 1)
+            levelCell.backgroundLabel.backgroundColor = project.projectIsValidated ? userCoalition?.additionalColor1 : userCoalition?.additionalColor3
             if project.projectFinalMark != "0", project.projectFinalMark != "-42" {
                 let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 125) * CGFloat(Double(project.projectFinalMark) ?? 0))
                 levelCell.rightConstraint.constant = rightInset
@@ -196,11 +193,11 @@ extension SecondViewController {
             }
         } else {
             levelCell.levelLabel.text = "No data"
-            levelCell.backgroundLabel.backgroundColor = coalitionColor
+            levelCell.backgroundLabel.backgroundColor = userCoalition?.mainColor
         }
         levelCell.levelLabel.textColor = .black
-        levelCell.cellHeight.constant = 20
-        levelCell.backgroundColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 0.6982288099)
+        levelCell.cellHeight.constant = 30
+        levelCell.backgroundColor = userCoalition?.mainColor
         return levelCell
     }
     

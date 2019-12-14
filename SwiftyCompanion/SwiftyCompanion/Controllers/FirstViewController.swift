@@ -17,6 +17,7 @@ class FirstViewController: UIViewController {
     var userImage : UserImage?
     var projectNames : ProjectNames?
     var userCoalition : Coalition?
+    var isRotating : Bool = false
 
     @IBOutlet weak var logoImage: UIImageView!
     
@@ -25,33 +26,37 @@ class FirstViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        rotator()
         
+//        searchTextField.text = "svovchyn"
         
-        searchTextField.text = "svovchyn"
-        
-//        searchUserDataButtonLabel.isHidden = true
-//        OAuthManager.getToken { result in
-//            switch result {
-//            case .success(let newToken):
-//                self.token = (newToken["access_token"] as! String)
-//                print(self.token ?? "tokena netu")
-//                UIView.animate(withDuration: 1) {
-//                    self.searchUserDataButtonLabel.isHidden = false
-//                }
-//            case .failure(let error):
-//                print(error)
-//                self.presentAlert(text: error.localizedDescription)
-//            }
-//        }
-        token = "4e4ef9071a4f594c7ef83c2657dc5f00a94f0524bd4dfac77a0a72de50ed2118"
+        searchUserDataButtonLabel.isHidden = true
+        OAuthManager.getToken { result in
+            switch result {
+            case .success(let newToken):
+                self.token = (newToken["access_token"] as! String)
+                print(self.token ?? "tokena netu")
+                UIView.animate(withDuration: 1) {
+                    self.searchUserDataButtonLabel.isHidden = false
+                }
+            case .failure(let error):
+                print(error)
+                self.presentAlert(text: error.localizedDescription)
+            }
+        }
+//        token = "4e4ef9071a4f594c7ef83c2657dc5f00a94f0524bd4dfac77a0a72de50ed2118"
     }
     
     func rotator() {
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveLinear, animations: { () -> Void in
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveLinear, animations: { () -> Void in
             self.logoImage.transform = self.logoImage.transform.rotated(by: .pi / 2)
         }) { (finished) -> Void in
-            self.rotator()
+            if self.isRotating {
+                self.rotator()
+            } else {
+                UIView.animate(withDuration: 0.2) {
+                    self.logoImage.transform = CGAffineTransform.identity
+                }
+            }
         }
     }
 }
@@ -60,6 +65,8 @@ extension FirstViewController {
     
     @IBAction func searchUserDataButton(_ sender: UIButton) {
         if searchTextField.text != "" {
+            isRotating = true
+            rotator()
             OAuthManager.searchUser(query: searchTextField.text!, token: token!) { result in
                 switch result {
                 case .success(let userData):
@@ -68,15 +75,18 @@ extension FirstViewController {
                         self.userCoalition = Coalition(userID: self.searchTextField.text!, token: self.token!) {
                             self.projectNames = ProjectNames(uniqueIDs: self.userData?.uniqueIDs ?? [""], token: self.token ?? "") {
                                 self.userImage = UserImage(imageUrl: self.userData?.userImageURL ?? "") {
+                                    self.isRotating = false
                                     self.performSegue(withIdentifier: "showUserData", sender: self)
                                 }
                             }
                         }
                     } else {
+                        self.isRotating = false
                         self.presentAlert(text: "User not found!")
                     }
                 case .failure(let error):
                     print(error)
+                    self.isRotating = false
                     self.presentAlert(text: error.localizedDescription)
                 }
             }
