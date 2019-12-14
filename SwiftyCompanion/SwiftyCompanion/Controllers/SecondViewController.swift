@@ -11,10 +11,10 @@ import SwiftyJSON
 
 class SecondViewController: UIViewController {
     
+    @IBOutlet weak var imageHeightConstraint: NSLayoutConstraint!
     @IBOutlet var generalView: UIView!
-    @IBOutlet weak var specialView: UIView!
     @IBOutlet weak var tableView: UITableView!
-    let imageView = UIImageView()
+    @IBOutlet weak var imageView: UIImageView!
     let usernameLabel = myLabel()
     let emailLabel = myLabel()
     let availabilityLabel = myLabel()
@@ -25,65 +25,70 @@ class SecondViewController: UIViewController {
     var projectNames : ProjectNames?
     var topInset : CGFloat?
     var coalitionColor : UIColor = #colorLiteral(red: 0.4692698717, green: 0.6561034322, blue: 0.4752988815, alpha: 0.8)
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        specialView.backgroundColor = coalitionColor
+        generalView.backgroundColor = coalitionColor
         
-        tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 300 - (topInset ?? 0), left: 0, bottom: 0, right: 0)
         tableView.backgroundColor = .clear
         tableView.register(UINib(nibName: "LevelTableViewCell", bundle: nil), forCellReuseIdentifier: "levelCell")
         tableView.register(UINib(nibName: "GeneralDataTableViewCell", bundle: nil), forCellReuseIdentifier: "generalDataCell")
         
-        imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 300)
         if let imageData = self.userImage?.imageData {
             self.imageView.image = UIImage(data: imageData)
         }
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        specialView.addSubview(imageView)
+        generalView.addSubview(imageView)
         
         addLabel(withLabel: usernameLabel,
                  withText: "\(userData?.username ?? "No data") - \(userData?.availableAt ?? "Unavailable")",
                  withCGRect: CGRect(x: 10, y: 265, width: 0, height: 0),
                  withColor: coalitionColor,
-                 toView: specialView)
+                 toView: imageView)
         addLabel(withLabel: emailLabel,
                  withText: userData?.email ?? "No data",
                  withCGRect: CGRect(x: 10, y: 300, width: 0, height: 0),
                  withColor: coalitionColor,
-                 toView: specialView)
+                 toView: imageView)
 
-        
         backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
         backButton.layer.cornerRadius = 25
         backButton.setTitle("<", for: .normal)
         backButton.setTitleColor(.white, for: .normal)
         backButton.backgroundColor = coalitionColor
         backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
-        specialView.addSubview(backButton)
+        imageView.addSubview(backButton)
+        imageView.bringSubviewToFront(backButton)
+        imageView.isUserInteractionEnabled = true
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        switch UIDevice.current.orientation{
+        case .portrait:
+            backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
+        case .portraitUpsideDown:
+            backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
+        case .landscapeLeft:
+            backButton.frame = CGRect(x: 10, y: 10, width: 50, height: 50)
+        case .landscapeRight:
+            backButton.frame = CGRect(x: 10, y: 10, width: 50, height: 50)
+        default:
+            backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
+        }
+    }
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let y = 300 - (scrollView.contentOffset.y + 300)
-        let height = min(max(y, 200), 400)
-        imageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: height)
+        let yOffset = scrollView.contentOffset.y
+        let y = yOffset > -160 ? 160 + (topInset ?? 0) : -yOffset + (topInset ?? 0)
+        imageHeightConstraint.constant = y
         emailLabel.frame = CGRect(x: 10, y: y - 44, width: 0, height: 0)
         usernameLabel.frame = CGRect(x: 10, y: y - 79, width: 0, height: 0)
         usernameLabel.sizeToFit()
         emailLabel.sizeToFit()
-        if scrollView.contentOffset.y < -400 {
-            scrollView.contentOffset.y = -400
-        }
-        if scrollView.contentOffset.y > -200 {
-            emailLabel.frame = CGRect(x: 10, y: 156, width: 0, height: 0)
-            usernameLabel.frame = CGRect(x: 10, y: 121, width: 0, height: 0)
-            usernameLabel.sizeToFit()
-            emailLabel.sizeToFit()
-        }
     }
-    
 }
 
 extension SecondViewController: UITableViewDelegate, UITableViewDataSource {

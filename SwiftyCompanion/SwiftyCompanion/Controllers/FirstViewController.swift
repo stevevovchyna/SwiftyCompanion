@@ -39,7 +39,7 @@ class FirstViewController: UIViewController {
 //                self.presentAlert(text: error.localizedDescription)
 //            }
 //        }
-        token = "ff72dee9793d2b8474256debc3bb51de567bbf2397fa39408665298663185107"
+        token = "2ac49bcfe43959b516f2c90a18b1ea42013824beaabc282eeb981faaffb8dbb3"
     }
 }
 
