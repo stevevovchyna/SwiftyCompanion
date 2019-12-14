@@ -60,23 +60,21 @@ class SecondViewController: UIViewController {
         backButton.setTitleColor(.white, for: .normal)
         backButton.backgroundColor = coalitionColor
         backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
-        imageView.addSubview(backButton)
-        imageView.bringSubviewToFront(backButton)
-        imageView.isUserInteractionEnabled = true
+        generalView.addSubview(backButton)
+        
+        if let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation {
+            backButton.frame = interfaceOrientation.isPortrait ? CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50) : CGRect(x: 10 + (topInset ?? 0), y: 10, width: 50, height: 50)
+        }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        switch UIDevice.current.orientation{
+        switch UIDevice.current.orientation {
         case .portrait:
             backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
-        case .portraitUpsideDown:
-            backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
-        case .landscapeLeft:
-            backButton.frame = CGRect(x: 10, y: 10, width: 50, height: 50)
-        case .landscapeRight:
-            backButton.frame = CGRect(x: 10, y: 10, width: 50, height: 50)
+        case .landscapeLeft, .landscapeRight:
+            backButton.frame = CGRect(x: 10 + (topInset ?? 0), y: 10, width: 50, height: 50)
         default:
-            backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
+            backButton.frame = CGRect(x: 10, y: 10, width: 50, height: 50)
         }
     }
 

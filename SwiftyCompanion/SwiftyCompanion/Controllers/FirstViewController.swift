@@ -39,7 +39,7 @@ class FirstViewController: UIViewController {
 //                self.presentAlert(text: error.localizedDescription)
 //            }
 //        }
-        token = "2ac49bcfe43959b516f2c90a18b1ea42013824beaabc282eeb981faaffb8dbb3"
+        token = "4e4ef9071a4f594c7ef83c2657dc5f00a94f0524bd4dfac77a0a72de50ed2118"
     }
 }
 
@@ -76,7 +76,16 @@ extension FirstViewController {
             controller.userData = userData
             controller.userImage = userImage
             controller.projectNames = projectNames
-            controller.topInset = view.safeAreaInsets.top
+//            if UIApplication.shared.statusBarOrientation.isLandscape {
+//                controller.topInset = view.safeAreaInsets.top
+//                print("land")
+//            } else {
+//                controller.topInset = view.safeAreaInsets.right
+//                print("side")
+//            }
+            if let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation {
+                controller.topInset = interfaceOrientation.isPortrait ? view.safeAreaInsets.top : view.safeAreaInsets.right
+            }
         }
     }
     
