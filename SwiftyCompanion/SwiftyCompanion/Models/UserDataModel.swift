@@ -32,10 +32,7 @@ class UserData {
     init(userData : JSON) {
         username = userData["login"].stringValue
         email = userData["email"].stringValue
-        availableAt = userData["location"].stringValue
-        if availableAt == "" {
-            availableAt = "Unavailable"
-        }
+        availableAt = userData["location"].stringValue == "" ?  "Unavailable" : userData["location"].stringValue
         level = userData["cursus_users"][0]["level"].stringValue
         phone = userData["phone"].stringValue
         firstName = userData["first_name"].stringValue
@@ -49,18 +46,14 @@ class UserData {
         for skill in userData["cursus_users"][0]["skills"] {
             skills.append(Skill(skill: skill.1))
         }
-        skills.sort {
-            $0.skillName < $1.skillName
-        }
+        skills.sort { $0.skillName < $1.skillName }
         projects = []
         for project in userData["projects_users"] {
             if project.1["cursus_ids"][0].stringValue == "1", project.1["validated?"].stringValue != "" {
                 projects.append(Project(project: project.1))
             }
         }
-        projects.sort {
-            $0.projectName < $1.projectName
-        }
+        projects.sort { $0.projectName < $1.projectName }
         uniqueIDs = UserData.getRushIDs(projects: projects)
     }
     
@@ -73,6 +66,34 @@ class UserData {
         }
         let uniqueIDs = Array(Set(IDs))
         return uniqueIDs
+    }
+}
+
+class Coalition {
+    var coalitionName : String
+    var coalitionColor : String
+    var coalitionScore : String
+    
+    init(userID: String, token: String, handler: @escaping () -> ()) {
+        coalitionName = ""
+        coalitionColor = ""
+        coalitionScore = ""
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        let urlString = "https://api.intra.42.fr/v2/users/\(userID)/coalitions"
+        let url = URL(string: urlString)
+        var request = URLRequest(url: url!)
+        request.httpMethod = "GET"
+        request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
+        let operation = DownloadOperation(session: URLSession.shared, dataTaskURLRequest: request, completionHandler: { (data, response, error) in
+            if let data = data {
+                self.coalitionName = JSON(data)[0]["name"].stringValue
+                self.coalitionColor = JSON(data)[0]["color"].stringValue
+                self.coalitionScore = JSON(data)[0]["score"].stringValue
+            }
+            handler()
+        })
+        queue.addOperation(operation)
     }
 }
 

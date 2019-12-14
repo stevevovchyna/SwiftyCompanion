@@ -16,12 +16,17 @@ class FirstViewController: UIViewController {
     var userData : UserData?
     var userImage : UserImage?
     var projectNames : ProjectNames?
+    var userCoalition : Coalition?
 
+    @IBOutlet weak var logoImage: UIImageView!
+    
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchUserDataButtonLabel: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        rotator()
+        
         
         searchTextField.text = "svovchyn"
         
@@ -41,6 +46,14 @@ class FirstViewController: UIViewController {
 //        }
         token = "4e4ef9071a4f594c7ef83c2657dc5f00a94f0524bd4dfac77a0a72de50ed2118"
     }
+    
+    func rotator() {
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveLinear, animations: { () -> Void in
+            self.logoImage.transform = self.logoImage.transform.rotated(by: .pi / 2)
+        }) { (finished) -> Void in
+            self.rotator()
+        }
+    }
 }
 
 extension FirstViewController {
@@ -52,9 +65,11 @@ extension FirstViewController {
                 case .success(let userData):
                     if userData.count > 0 {
                         self.userData = UserData(userData: JSON(userData))
-                        self.projectNames = ProjectNames(uniqueIDs: self.userData?.uniqueIDs ?? [""], token: self.token ?? "") {
-                            self.userImage = UserImage(imageUrl: self.userData?.userImageURL ?? "") {
-                                self.performSegue(withIdentifier: "showUserData", sender: self)
+                        self.userCoalition = Coalition(userID: self.searchTextField.text!, token: self.token!) {
+                            self.projectNames = ProjectNames(uniqueIDs: self.userData?.uniqueIDs ?? [""], token: self.token ?? "") {
+                                self.userImage = UserImage(imageUrl: self.userData?.userImageURL ?? "") {
+                                    self.performSegue(withIdentifier: "showUserData", sender: self)
+                                }
                             }
                         }
                     } else {
@@ -76,6 +91,7 @@ extension FirstViewController {
             controller.userData = userData
             controller.userImage = userImage
             controller.projectNames = projectNames
+            controller.userCoalition = userCoalition
 //            if UIApplication.shared.statusBarOrientation.isLandscape {
 //                controller.topInset = view.safeAreaInsets.top
 //                print("land")

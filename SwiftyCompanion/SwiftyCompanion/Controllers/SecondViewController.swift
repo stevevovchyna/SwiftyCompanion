@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyJSON
+import Foundation
 
 class SecondViewController: UIViewController {
     
@@ -22,12 +23,15 @@ class SecondViewController: UIViewController {
     
     var userData : UserData?
     var userImage : UserImage?
+    var userCoalition : Coalition?
     var projectNames : ProjectNames?
     var topInset : CGFloat?
     var coalitionColor : UIColor = #colorLiteral(red: 0.4692698717, green: 0.6561034322, blue: 0.4752988815, alpha: 0.8)
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        coalitionColor = UIColor(hex: (userCoalition?.coalitionColor ?? "#CC82AD") + "ff") ?? #colorLiteral(red: 1, green: 0.8409949541, blue: 0.8371030092, alpha: 0.8)
         
         generalView.backgroundColor = coalitionColor
         
@@ -187,6 +191,8 @@ extension SecondViewController {
             if project.projectFinalMark != "0", project.projectFinalMark != "-42" {
                 let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 125) * CGFloat(Double(project.projectFinalMark) ?? 0))
                 levelCell.rightConstraint.constant = rightInset
+            } else {
+                levelCell.rightConstraint.constant = 0
             }
         } else {
             levelCell.levelLabel.text = "No data"

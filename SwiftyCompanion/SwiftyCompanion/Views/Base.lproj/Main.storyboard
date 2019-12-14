@@ -36,6 +36,10 @@
                                             <action selector="searchUserDataButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Sr6-tO-y00"/>
                                         </connections>
                                     </button>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="intraLogo" translatesAutoresizingMaskIntoConstraints="NO" id="FUu-4T-EeK">
+                                        <rect key="frame" x="145" y="29" width="125" height="125"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="409" id="4TZ-PQ-qwj"/>
@@ -59,6 +63,7 @@
                     <navigationItem key="navigationItem" id="zmy-HN-evd"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="logoImage" destination="FUu-4T-EeK" id="eeH-ui-chZ"/>
                         <outlet property="searchTextField" destination="Jpj-oq-cxa" id="tcf-UN-2J0"/>
                         <outlet property="searchUserDataButtonLabel" destination="490-Z2-Bk7" id="byW-Vy-aWv"/>
                         <segue destination="3Z7-G5-60V" kind="show" identifier="showUserData" id="5op-CH-VDP"/>
@@ -66,7 +71,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-499" y="-454"/>
+            <point key="canvasLocation" x="-500.00000000000006" y="-454.01785714285711"/>
         </scene>
         <!--User's Profile-->
         <scene sceneID="Sne-s7-5WW">
@@ -160,4 +165,7 @@
             <point key="canvasLocation" x="-1501" y="-454"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="intraLogo" width="150" height="150"/>
+    </resources>
 </document>
