@@ -12,8 +12,14 @@ class LevelTableViewCell: UITableViewCell {
 
     @IBOutlet weak var rightConstraint: NSLayoutConstraint!
     @IBOutlet weak var backgroundLabel: UILabel!
+    @IBOutlet weak var veryBackgroundLabel: UIView!
     @IBOutlet weak var levelLabel: UILabel!
     @IBOutlet weak var cellHeight: NSLayoutConstraint!
+    @IBOutlet weak var backgroundHeight: NSLayoutConstraint!
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var topConstraint: NSLayoutConstraint!
+    @IBOutlet weak var leftConstraint: NSLayoutConstraint!
+    @IBOutlet weak var rightInsetConstraint: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()

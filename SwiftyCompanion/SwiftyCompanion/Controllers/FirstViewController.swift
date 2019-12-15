@@ -27,7 +27,7 @@ class FirstViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        searchTextField.text = "svovchyn"
+        searchTextField.text = "svovchyn"
         
         searchUserDataButtonLabel.isHidden = true
         OAuthManager.getToken { result in

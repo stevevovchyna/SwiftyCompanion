@@ -30,18 +30,22 @@ class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        generalView.backgroundColor = userCoalition?.additionalColor1
+//        generalView.backgroundColor = userCoalition?.additionalColor1
+        generalView.backgroundColor = .clear
         
         tableView.contentInset = UIEdgeInsets(top: 300 - (topInset ?? 0), left: 0, bottom: 0, right: 0)
-        tableView.backgroundColor = .clear
+        tableView.backgroundColor = .white
         tableView.register(UINib(nibName: "LevelTableViewCell", bundle: nil), forCellReuseIdentifier: "levelCell")
         tableView.register(UINib(nibName: "GeneralDataTableViewCell", bundle: nil), forCellReuseIdentifier: "generalDataCell")
+        tableView.separatorStyle = .none
+        
         
         if let imageData = self.userImage?.imageData {
             self.imageView.image = UIImage(data: imageData)
         }
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 10
         generalView.addSubview(imageView)
         
         addLabel(withLabel: usernameLabel,
@@ -133,60 +137,143 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension SecondViewController {
     
-    func dividerCell(withName cellName: String, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
+    func levelCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
-        levelCell.cellHeight.constant = 30
-        levelCell.levelLabel.text = cellName
-        levelCell.backgroundLabel.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        levelCell.levelLabel.textColor = .white
-        levelCell.rightConstraint.constant = 0
+
+        let floatLevel = ((userData?.level ?? "0") as NSString).floatValue
+        levelCell.levelLabel.text = String(format: "%.2f%", floatLevel)
+        
+        let rightInset = levelCell.veryBackgroundLabel.frame.size.width - (levelCell.veryBackgroundLabel.frame.size.width / 21) * CGFloat(floatLevel)
+        levelCell.rightConstraint.constant = rightInset
+        
+        levelCell.layer.cornerRadius = 10
+        levelCell.backgroundLabel.layer.cornerRadius = 10
+        levelCell.veryBackgroundLabel.layer.cornerRadius = 10
+        
+        levelCell.backgroundColor = .clear
+        levelCell.veryBackgroundLabel.backgroundColor = userCoalition?.mainColor
+        levelCell.backgroundLabel.backgroundColor = userCoalition?.additionalColor1
+        
+        levelCell.cellHeight.constant = 44
+        levelCell.backgroundHeight.constant = 44
+        
+        levelCell.topConstraint.constant = 2
+        levelCell.bottomConstraint.constant = 2
+        levelCell.rightInsetConstraint.constant = 10
+        levelCell.leftConstraint.constant = 10
+        
+        levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
+        levelCell.veryBackgroundLabel.layer.shadowRadius = 1.0
+        levelCell.veryBackgroundLabel.layer.shadowOpacity = 0.4
+        levelCell.veryBackgroundLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
+        
         return levelCell
     }
     
-    func levelCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
+    func dividerCell(withName cellName: String, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
-        let floatLevel = ((userData?.level ?? "0") as NSString).floatValue
-        levelCell.backgroundColor = userCoalition?.mainColor
-        levelCell.cellHeight.constant = 44
-        levelCell.levelLabel.text = String(format: "%.2f%", floatLevel)
-        levelCell.backgroundLabel.backgroundColor = userCoalition?.additionalColor1
-        let rightInset = UIScreen.main.bounds.size.width - (UIScreen.main.bounds.size.width / 21) * CGFloat(floatLevel)
-        levelCell.rightConstraint.constant = rightInset
+        
+        levelCell.levelLabel.text = cellName
+        
+        levelCell.rightConstraint.constant = 0
+        
+        levelCell.layer.cornerRadius = 10
+        levelCell.backgroundLabel.layer.cornerRadius = 10
+        levelCell.veryBackgroundLabel.layer.cornerRadius = 10
+        
+        levelCell.backgroundColor = .clear
+        levelCell.veryBackgroundLabel.backgroundColor = .clear
+        levelCell.backgroundLabel.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        levelCell.levelLabel.textColor = .white
+        
+        levelCell.cellHeight.constant = 50
+        levelCell.backgroundHeight.constant = 50
+        
+        levelCell.topConstraint.constant = 2
+        levelCell.bottomConstraint.constant = 2
+        levelCell.rightInsetConstraint.constant = 2
+        levelCell.leftConstraint.constant = 2
+        
+        levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
+        levelCell.veryBackgroundLabel.layer.shadowRadius = 1.0
+        levelCell.veryBackgroundLabel.layer.shadowOpacity = 0.4
+        levelCell.veryBackgroundLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
+        
         return levelCell
     }
     
     func generalDataCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
         let generalDataCell = tableView.dequeueReusableCell(withIdentifier: "generalDataCell", for: indexPath) as! GeneralDataTableViewCell
-        generalDataCell.backgroundColor = userCoalition?.additionalColor2
-        generalDataCell.fullNameLabel.text = "\(userData?.firstName ?? "Somebody") \(userData?.lastName ?? "Somebody")"
+        
+        generalDataCell.fullNameLabel.text = "\(userData?.firstName ?? "Somebody") \(userData?.lastName ?? "Somebody")" 
         generalDataCell.phoneNumberLabel.text = userData?.phone
         generalDataCell.evaluationPointsLabel.text = userData?.evaluationPoints
         generalDataCell.gradeLabel.text = userData?.grade
         generalDataCell.walletLabel.text = userData?.wallets
         generalDataCell.poolYearLabel.text = userData?.poolYear
+
+        generalDataCell.mainView.layer.cornerRadius = 10
+        
+        generalDataCell.backgroundColor = .clear
+        generalDataCell.mainView.backgroundColor = userCoalition?.additionalColor2
+        
+        generalDataCell.leftConstraint.constant = 15
+        generalDataCell.rightConstraint.constant = 15
+        
+        generalDataCell.mainView.layer.shadowColor = UIColor.black.cgColor
+        generalDataCell.mainView.layer.shadowRadius = 1.0
+        generalDataCell.mainView.layer.shadowOpacity = 0.4
+        generalDataCell.mainView.layer.shadowOffset = CGSize(width: 1, height: 1)
+
         return generalDataCell
     }
     
     func skillCell(withSkills skills: [Skill], withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
-        levelCell.levelLabel.text = "\(skills[indexPath.row - 3].skillName) - \(skills[indexPath.row - 3].skillLevel)"
-        let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 20) * CGFloat(Double(skills[indexPath.row - 3].skillLevel) ?? 0))
+        
+        let skillLevel = (skills[indexPath.row - 3].skillLevel as NSString).floatValue
+        levelCell.levelLabel.text = "\(skills[indexPath.row - 3].skillName) - \(String(format: "%.2f", skillLevel))"
+        
+        let rightInset = levelCell.veryBackgroundLabel.frame.size.width - ((levelCell.veryBackgroundLabel.frame.size.width / 20) * CGFloat(Double(skills[indexPath.row - 3].skillLevel) ?? 0))
         levelCell.rightConstraint.constant = rightInset
+        
+        levelCell.layer.cornerRadius = 10
+        levelCell.backgroundLabel.layer.cornerRadius = 10
+        levelCell.veryBackgroundLabel.layer.cornerRadius = 10
+        
         levelCell.levelLabel.textColor = .black
         levelCell.backgroundLabel.backgroundColor = randomColor()
-        levelCell.cellHeight.constant = 30
-        levelCell.backgroundColor = userCoalition?.mainColor
+        levelCell.veryBackgroundLabel.backgroundColor = userCoalition?.mainColor
+        levelCell.backgroundColor = .clear
+        
+        levelCell.cellHeight.constant = 44
+        levelCell.backgroundHeight.constant = 44
+        
+        levelCell.topConstraint.constant = 2
+        levelCell.bottomConstraint.constant = 2
+        levelCell.rightInsetConstraint.constant = 10
+        levelCell.leftConstraint.constant = 10
+        
+        levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
+        levelCell.veryBackgroundLabel.layer.shadowRadius = 1.0
+        levelCell.veryBackgroundLabel.layer.shadowOpacity = 0.4
+        levelCell.veryBackgroundLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
+        
         return levelCell
     }
     
     func projectCell(withSkillsCount skillsCount: Int, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
+        levelCell.topConstraint.constant = 2
+        levelCell.bottomConstraint.constant = 2
+        levelCell.rightInsetConstraint.constant = 10
+        levelCell.leftConstraint.constant = 10
         if let project = userData?.projects[indexPath.row - (skillsCount + 4)] {
             let possibleParent = project.projectIsInPiscine ? "\(projectNames?.entities[project.projectParentID!] ?? "No data") " : ""
             levelCell.levelLabel.text = possibleParent + "\(project.projectName) - \(project.projectFinalMark)"
             levelCell.backgroundLabel.backgroundColor = project.projectIsValidated ? userCoalition?.additionalColor1 : userCoalition?.additionalColor3
             if project.projectFinalMark != "0", project.projectFinalMark != "-42" {
-                let rightInset = UIScreen.main.bounds.size.width - ((UIScreen.main.bounds.size.width / 125) * CGFloat(Double(project.projectFinalMark) ?? 0))
+                let rightInset = levelCell.veryBackgroundLabel.frame.size.width - ((levelCell.veryBackgroundLabel.frame.size.width / 125) * CGFloat(Double(project.projectFinalMark) ?? 0))
                 levelCell.rightConstraint.constant = rightInset
             } else {
                 levelCell.rightConstraint.constant = 0
@@ -195,9 +282,23 @@ extension SecondViewController {
             levelCell.levelLabel.text = "No data"
             levelCell.backgroundLabel.backgroundColor = userCoalition?.mainColor
         }
+        
+        levelCell.layer.cornerRadius = 10
+        levelCell.backgroundLabel.layer.cornerRadius = 10
+        levelCell.veryBackgroundLabel.layer.cornerRadius = 10
+        
         levelCell.levelLabel.textColor = .black
-        levelCell.cellHeight.constant = 30
-        levelCell.backgroundColor = userCoalition?.mainColor
+        levelCell.veryBackgroundLabel.backgroundColor = userCoalition?.mainColor
+        levelCell.backgroundColor = .clear
+        
+        levelCell.cellHeight.constant = 44
+        levelCell.backgroundHeight.constant = 44
+        
+        levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
+        levelCell.veryBackgroundLabel.layer.shadowRadius = 1.0
+        levelCell.veryBackgroundLabel.layer.shadowOpacity = 0.4
+        levelCell.veryBackgroundLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
+        
         return levelCell
     }
     
