@@ -12,6 +12,8 @@ import Foundation
 
 class SecondViewController: UIViewController {
     
+    @IBOutlet weak var tableViewRightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var tableViewLeftConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageHeightConstraint: NSLayoutConstraint!
     @IBOutlet var generalView: UIView!
     @IBOutlet weak var tableView: UITableView!
@@ -30,14 +32,16 @@ class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        generalView.backgroundColor = userCoalition?.additionalColor1
-        generalView.backgroundColor = .clear
+        generalView.backgroundColor = .white
         
         tableView.contentInset = UIEdgeInsets(top: 300 - (topInset ?? 0), left: 0, bottom: 0, right: 0)
         tableView.backgroundColor = .white
         tableView.register(UINib(nibName: "LevelTableViewCell", bundle: nil), forCellReuseIdentifier: "levelCell")
         tableView.register(UINib(nibName: "GeneralDataTableViewCell", bundle: nil), forCellReuseIdentifier: "generalDataCell")
         tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
+        tableViewLeftConstraint.constant = 10
+        tableViewRightConstraint.constant = -10
         
         
         if let imageData = self.userImage?.imageData {
@@ -45,8 +49,12 @@ class SecondViewController: UIViewController {
         }
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 10
+        imageView.layer.cornerRadius = 20
         generalView.addSubview(imageView)
+        imageView.layer.shadowColor = UIColor.black.cgColor
+        imageView.layer.shadowRadius = 3.0
+        imageView.layer.shadowOpacity = 0.7
+        imageView.layer.shadowOffset = CGSize(width: 0, height: 3)
         
         addLabel(withLabel: usernameLabel,
                  withText: "\(userData?.username ?? "No data") - \(userData?.availableAt ?? "Unavailable")",
@@ -157,15 +165,12 @@ extension SecondViewController {
         levelCell.cellHeight.constant = 44
         levelCell.backgroundHeight.constant = 44
         
-        levelCell.topConstraint.constant = 2
-        levelCell.bottomConstraint.constant = 2
-        levelCell.rightInsetConstraint.constant = 10
-        levelCell.leftConstraint.constant = 10
+        levelCell.topConstraint.constant = 10
+        levelCell.bottomConstraint.constant = 10
+        levelCell.rightInsetConstraint.constant = 5
+        levelCell.leftConstraint.constant = 5
         
-        levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
-        levelCell.veryBackgroundLabel.layer.shadowRadius = 1.0
-        levelCell.veryBackgroundLabel.layer.shadowOpacity = 0.4
-        levelCell.veryBackgroundLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
+        shadesAnimation(forView: levelCell)
         
         return levelCell
     }
@@ -186,18 +191,15 @@ extension SecondViewController {
         levelCell.backgroundLabel.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         levelCell.levelLabel.textColor = .white
         
-        levelCell.cellHeight.constant = 50
-        levelCell.backgroundHeight.constant = 50
+        levelCell.cellHeight.constant = 30
+        levelCell.backgroundHeight.constant = 30
         
-        levelCell.topConstraint.constant = 2
-        levelCell.bottomConstraint.constant = 2
-        levelCell.rightInsetConstraint.constant = 2
-        levelCell.leftConstraint.constant = 2
+        levelCell.topConstraint.constant = 10
+        levelCell.bottomConstraint.constant = 10
+        levelCell.rightInsetConstraint.constant = 5
+        levelCell.leftConstraint.constant = 5
         
-        levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
-        levelCell.veryBackgroundLabel.layer.shadowRadius = 1.0
-        levelCell.veryBackgroundLabel.layer.shadowOpacity = 0.4
-        levelCell.veryBackgroundLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
+        shadesAnimation(forView: levelCell)
         
         return levelCell
     }
@@ -217,13 +219,15 @@ extension SecondViewController {
         generalDataCell.backgroundColor = .clear
         generalDataCell.mainView.backgroundColor = userCoalition?.additionalColor2
         
-        generalDataCell.leftConstraint.constant = 15
-        generalDataCell.rightConstraint.constant = 15
+        generalDataCell.leftConstraint.constant = 5
+        generalDataCell.rightConstraint.constant = 5
+        generalDataCell.topConstraint.constant = 5
+        generalDataCell.bottomConstraint.constant = 5
         
-        generalDataCell.mainView.layer.shadowColor = UIColor.black.cgColor
-        generalDataCell.mainView.layer.shadowRadius = 1.0
-        generalDataCell.mainView.layer.shadowOpacity = 0.4
-        generalDataCell.mainView.layer.shadowOffset = CGSize(width: 1, height: 1)
+        generalDataCell.layer.shadowColor = UIColor.black.cgColor
+        generalDataCell.layer.shadowRadius = 2.0
+        generalDataCell.layer.shadowOpacity = 0.5
+        generalDataCell.layer.shadowOffset = CGSize(width: 0, height: 2)
 
         return generalDataCell
     }
@@ -242,7 +246,7 @@ extension SecondViewController {
         levelCell.veryBackgroundLabel.layer.cornerRadius = 10
         
         levelCell.levelLabel.textColor = .black
-        levelCell.backgroundLabel.backgroundColor = randomColor()
+        levelCell.backgroundLabel.backgroundColor = userCoalition?.additionalColor2
         levelCell.veryBackgroundLabel.backgroundColor = userCoalition?.mainColor
         levelCell.backgroundColor = .clear
         
@@ -251,13 +255,10 @@ extension SecondViewController {
         
         levelCell.topConstraint.constant = 2
         levelCell.bottomConstraint.constant = 2
-        levelCell.rightInsetConstraint.constant = 10
-        levelCell.leftConstraint.constant = 10
+        levelCell.rightInsetConstraint.constant = 5
+        levelCell.leftConstraint.constant = 5
         
-        levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
-        levelCell.veryBackgroundLabel.layer.shadowRadius = 1.0
-        levelCell.veryBackgroundLabel.layer.shadowOpacity = 0.4
-        levelCell.veryBackgroundLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
+        shadesAnimation(forView: levelCell)
         
         return levelCell
     }
@@ -266,8 +267,9 @@ extension SecondViewController {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
         levelCell.topConstraint.constant = 2
         levelCell.bottomConstraint.constant = 2
-        levelCell.rightInsetConstraint.constant = 10
-        levelCell.leftConstraint.constant = 10
+        levelCell.rightInsetConstraint.constant = 5
+        levelCell.leftConstraint.constant = 5
+        
         if let project = userData?.projects[indexPath.row - (skillsCount + 4)] {
             let possibleParent = project.projectIsInPiscine ? "\(projectNames?.entities[project.projectParentID!] ?? "No data") " : ""
             levelCell.levelLabel.text = possibleParent + "\(project.projectName) - \(project.projectFinalMark)"
@@ -294,11 +296,8 @@ extension SecondViewController {
         levelCell.cellHeight.constant = 44
         levelCell.backgroundHeight.constant = 44
         
-        levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
-        levelCell.veryBackgroundLabel.layer.shadowRadius = 1.0
-        levelCell.veryBackgroundLabel.layer.shadowOpacity = 0.4
-        levelCell.veryBackgroundLabel.layer.shadowOffset = CGSize(width: 1, height: 1)
-        
+        shadesAnimation(forView: levelCell)
+
         return levelCell
     }
     
@@ -310,7 +309,20 @@ extension SecondViewController {
         usernameLabel.frame = rect
         usernameLabel.backgroundColor = color
         usernameLabel.textColor = .white
+        usernameLabel.layer.shadowColor = UIColor.black.cgColor
+        usernameLabel.layer.shadowRadius = 3.0
+        usernameLabel.layer.shadowOpacity = 0.7
+        usernameLabel.layer.shadowOffset = CGSize(width: 0, height: 3)
         toView.addSubview(usernameLabel)
+    }
+    
+    func shadesAnimation(forView levelCell: LevelTableViewCell) {
+        UIView.animate(withDuration: 2) {
+            levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
+            levelCell.veryBackgroundLabel.layer.shadowRadius = 2.0
+            levelCell.veryBackgroundLabel.layer.shadowOpacity = 0.5
+            levelCell.veryBackgroundLabel.layer.shadowOffset = CGSize(width: 0, height: 2)
+        }
     }
 
     @objc func backButtonClicked() {

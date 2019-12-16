@@ -39,19 +39,19 @@
                         <constraints>
                             <constraint firstItem="0oF-9w-ezE" firstAttribute="top" secondItem="xVF-yX-hcI" secondAttribute="top" id="37M-Qj-sLo"/>
                             <constraint firstAttribute="bottom" secondItem="0oF-9w-ezE" secondAttribute="bottom" id="dLS-hG-g6H"/>
-                            <constraint firstAttribute="trailing" secondItem="0oF-9w-ezE" secondAttribute="trailing" id="gy7-oS-Of7"/>
-                            <constraint firstItem="adt-at-wap" firstAttribute="centerX" secondItem="xVF-yX-hcI" secondAttribute="centerX" id="hHm-go-UEy"/>
-                            <constraint firstItem="0oF-9w-ezE" firstAttribute="leading" secondItem="xVF-yX-hcI" secondAttribute="leading" id="q97-89-UNb"/>
-                            <constraint firstItem="adt-at-wap" firstAttribute="centerY" secondItem="xVF-yX-hcI" secondAttribute="centerY" id="r1R-zk-lUU"/>
+                            <constraint firstAttribute="trailing" secondItem="0oF-9w-ezE" secondAttribute="trailing" priority="999" id="gy7-oS-Of7"/>
+                            <constraint firstItem="adt-at-wap" firstAttribute="centerX" secondItem="xVF-yX-hcI" secondAttribute="centerX" priority="999" id="hHm-go-UEy"/>
+                            <constraint firstItem="0oF-9w-ezE" firstAttribute="leading" secondItem="xVF-yX-hcI" secondAttribute="leading" priority="999" id="q97-89-UNb"/>
+                            <constraint firstItem="adt-at-wap" firstAttribute="centerY" secondItem="xVF-yX-hcI" secondAttribute="centerY" priority="999" id="r1R-zk-lUU"/>
                             <constraint firstAttribute="height" priority="999" constant="44" id="rtu-YM-bTo"/>
                         </constraints>
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="xVF-yX-hcI" secondAttribute="trailing" id="0IG-St-Zaa"/>
+                    <constraint firstAttribute="trailing" secondItem="xVF-yX-hcI" secondAttribute="trailing" priority="999" id="0IG-St-Zaa"/>
                     <constraint firstAttribute="bottom" secondItem="xVF-yX-hcI" secondAttribute="bottom" constant="7" id="aoG-A7-Qxd"/>
                     <constraint firstItem="xVF-yX-hcI" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="jCf-YV-Pvx"/>
-                    <constraint firstItem="xVF-yX-hcI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="mig-Os-JVW"/>
+                    <constraint firstItem="xVF-yX-hcI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" priority="999" id="mig-Os-JVW"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

@@ -24,37 +24,56 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aPJ-vP-fDv">
                                                 <rect key="frame" x="0.0" y="0.0" width="414" height="213"/>
                                                 <subviews>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Student's login goes here..." textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Jpj-oq-cxa">
-                                                        <rect key="frame" x="91.333333333333329" y="89.666666666666657" width="231.66666666666669" height="34"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
-                                                    </textField>
-                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="intraLogo" translatesAutoresizingMaskIntoConstraints="NO" id="FUu-4T-EeK">
-                                                        <rect key="frame" x="331" y="89" width="34" height="34"/>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sPu-mJ-bnO">
+                                                        <rect key="frame" x="10" y="10" width="394" height="120"/>
+                                                        <subviews>
+                                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="intraLogo" translatesAutoresizingMaskIntoConstraints="NO" id="FUu-4T-EeK">
+                                                                <rect key="frame" x="352" y="8" width="34" height="34"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="width" constant="34" id="iEB-J8-bcp"/>
+                                                                    <constraint firstAttribute="height" constant="34" id="tfK-l9-4Du"/>
+                                                                </constraints>
+                                                            </imageView>
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="490-Z2-Bk7">
+                                                                <rect key="frame" x="8" y="50" width="378" height="30"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="30" id="dXL-nj-v1m"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="20"/>
+                                                                <state key="normal" title="Search">
+                                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                </state>
+                                                                <connections>
+                                                                    <action selector="searchUserDataButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Sr6-tO-y00"/>
+                                                                </connections>
+                                                            </button>
+                                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Student's login goes here..." textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="Jpj-oq-cxa" customClass="MyCustomTextField" customModule="SwiftyCompanion" customModuleProvider="target">
+                                                                <rect key="frame" x="8" y="8" width="333.66666666666669" height="34"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="34" id="joD-qv-xJl"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                <textInputTraits key="textInputTraits"/>
+                                                            </textField>
+                                                        </subviews>
                                                         <constraints>
-                                                            <constraint firstAttribute="width" constant="34" id="0Mx-eY-wW2"/>
-                                                            <constraint firstAttribute="height" constant="34" id="tne-86-eDt"/>
+                                                            <constraint firstAttribute="height" constant="120" id="352-c1-2SI"/>
+                                                            <constraint firstItem="490-Z2-Bk7" firstAttribute="top" secondItem="Jpj-oq-cxa" secondAttribute="bottom" constant="8" id="E2h-26-Mei"/>
+                                                            <constraint firstItem="490-Z2-Bk7" firstAttribute="leading" secondItem="sPu-mJ-bnO" secondAttribute="leading" constant="8" id="SNW-Kp-7ZD"/>
+                                                            <constraint firstItem="FUu-4T-EeK" firstAttribute="top" secondItem="sPu-mJ-bnO" secondAttribute="top" constant="8" id="UCc-7I-wjN"/>
+                                                            <constraint firstItem="Jpj-oq-cxa" firstAttribute="leading" secondItem="sPu-mJ-bnO" secondAttribute="leading" constant="8" id="ibT-oD-gBH"/>
+                                                            <constraint firstAttribute="trailing" secondItem="490-Z2-Bk7" secondAttribute="trailing" constant="8" id="jDY-Ri-J27"/>
+                                                            <constraint firstItem="Jpj-oq-cxa" firstAttribute="top" secondItem="sPu-mJ-bnO" secondAttribute="top" constant="8" id="ngp-L8-nwY"/>
+                                                            <constraint firstItem="FUu-4T-EeK" firstAttribute="leading" secondItem="Jpj-oq-cxa" secondAttribute="trailing" constant="10.33" id="xlp-UA-gyd"/>
+                                                            <constraint firstAttribute="trailing" secondItem="FUu-4T-EeK" secondAttribute="trailing" constant="8" id="zYt-DQ-4sV"/>
                                                         </constraints>
-                                                    </imageView>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="490-Z2-Bk7">
-                                                        <rect key="frame" x="177" y="130.66666666666666" width="60" height="36"/>
-                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="20"/>
-                                                        <state key="normal" title="Search">
-                                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </state>
-                                                        <connections>
-                                                            <action selector="searchUserDataButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Sr6-tO-y00"/>
-                                                        </connections>
-                                                    </button>
+                                                    </view>
                                                 </subviews>
                                                 <constraints>
-                                                    <constraint firstItem="Jpj-oq-cxa" firstAttribute="centerX" secondItem="aPJ-vP-fDv" secondAttribute="centerX" id="4Wh-XM-XiC"/>
-                                                    <constraint firstItem="490-Z2-Bk7" firstAttribute="centerX" secondItem="aPJ-vP-fDv" secondAttribute="centerX" id="A65-WA-1F8"/>
-                                                    <constraint firstItem="FUu-4T-EeK" firstAttribute="leading" secondItem="Jpj-oq-cxa" secondAttribute="trailing" constant="8" id="Nfe-QE-BuL"/>
+                                                    <constraint firstAttribute="trailing" secondItem="sPu-mJ-bnO" secondAttribute="trailing" constant="10" id="LFF-12-Z3u"/>
+                                                    <constraint firstItem="sPu-mJ-bnO" firstAttribute="leading" secondItem="aPJ-vP-fDv" secondAttribute="leading" constant="10" id="Nwk-Y2-fXk"/>
                                                     <constraint firstAttribute="height" constant="213" id="X7W-d5-OlB"/>
-                                                    <constraint firstItem="490-Z2-Bk7" firstAttribute="top" secondItem="Jpj-oq-cxa" secondAttribute="bottom" constant="7" id="c4K-fE-bmJ"/>
-                                                    <constraint firstItem="Jpj-oq-cxa" firstAttribute="centerY" secondItem="aPJ-vP-fDv" secondAttribute="centerY" id="faU-kx-2bd"/>
-                                                    <constraint firstItem="FUu-4T-EeK" firstAttribute="top" secondItem="aPJ-vP-fDv" secondAttribute="top" constant="89" id="iby-Hw-Cfb"/>
+                                                    <constraint firstItem="sPu-mJ-bnO" firstAttribute="top" secondItem="aPJ-vP-fDv" secondAttribute="top" constant="10" id="gPP-O4-Mto"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
@@ -85,6 +104,8 @@
                     <navigationItem key="navigationItem" id="zmy-HN-evd"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="generalView" destination="7aI-0e-Qgs" id="JBz-ya-LWg"/>
+                        <outlet property="loginInputView" destination="sPu-mJ-bnO" id="8bn-3m-w0o"/>
                         <outlet property="logoImage" destination="FUu-4T-EeK" id="eeH-ui-chZ"/>
                         <outlet property="searchTextField" destination="Jpj-oq-cxa" id="tcf-UN-2J0"/>
                         <outlet property="searchUserDataButtonLabel" destination="490-Z2-Bk7" id="byW-Vy-aWv"/>
@@ -108,14 +129,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="NNf-N4-36R" customClass="InfoTableViewCell" customModule="SwiftyCompanion" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                        <rect key="frame" x="0.0" y="28" width="414" height="43.333332061767578"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NNf-N4-36R" id="COl-Hj-qwY">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.333332061767578"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7HU-UA-Eaa">
-                                                    <rect key="frame" x="29" y="11.000000000000002" width="365" height="21.666666666666671"/>
+                                                    <rect key="frame" x="29" y="11" width="365" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -164,6 +185,8 @@
                         <outlet property="imageHeightConstraint" destination="ntL-xk-5O9" id="G5x-uu-aCZ"/>
                         <outlet property="imageView" destination="o9p-F7-oD1" id="VxY-Bt-yeq"/>
                         <outlet property="tableView" destination="ZQJ-SM-leV" id="61j-5Z-8xA"/>
+                        <outlet property="tableViewLeftConstraint" destination="kr0-fO-1kj" id="9ei-Be-11Y"/>
+                        <outlet property="tableViewRightConstraint" destination="dXw-im-1Is" id="AeC-TA-7vk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q28-XJ-jy5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

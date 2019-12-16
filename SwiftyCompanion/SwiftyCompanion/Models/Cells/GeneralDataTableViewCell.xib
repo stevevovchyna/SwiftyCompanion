@@ -222,6 +222,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="bottomConstraint" destination="X1i-Cu-rCc" id="qKi-Ry-M97"/>
                 <outlet property="evaluationPointsLabel" destination="6Su-xl-Vwn" id="PdI-gK-Q7Q"/>
                 <outlet property="fullNameLabel" destination="E1M-dM-bwG" id="wuO-gf-QZb"/>
                 <outlet property="gradeLabel" destination="akc-W0-6ZY" id="SIi-jA-rXw"/>
@@ -230,6 +231,7 @@
                 <outlet property="phoneNumberLabel" destination="Zad-zK-ye4" id="OxZ-9c-AyT"/>
                 <outlet property="poolYearLabel" destination="rJ4-nx-r9X" id="q9X-Wd-TWO"/>
                 <outlet property="rightConstraint" destination="k1z-YB-ctM" id="N4U-m3-uAQ"/>
+                <outlet property="topConstraint" destination="UuV-Dd-fT6" id="eVH-ey-d8B"/>
                 <outlet property="walletLabel" destination="W1U-yb-zsK" id="E23-Tu-edi"/>
             </connections>
             <point key="canvasLocation" x="131.8840579710145" y="108.48214285714285"/>

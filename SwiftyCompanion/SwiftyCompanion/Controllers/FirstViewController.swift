@@ -10,6 +10,33 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
+class MyCustomTextField : UITextField {
+    
+    let padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.backgroundColor = #colorLiteral(red: 0.9254901961, green: 0.7411764706, blue: 0.5450980392, alpha: 0.640625)
+        self.tintColor = UIColor.white
+        self.borderStyle = UITextField.BorderStyle.roundedRect
+        self.layer.cornerRadius = 10
+    }
+
+    override open func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+
+    override open func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+
+    override open func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+    
+}
+
+
 class FirstViewController: UIViewController {
     
     var token : String?
@@ -21,13 +48,40 @@ class FirstViewController: UIViewController {
 
     @IBOutlet weak var logoImage: UIImageView!
     
-    @IBOutlet weak var searchTextField: UITextField!
+
+    @IBOutlet weak var generalView: UIView!
+    @IBOutlet weak var loginInputView: UIView!
+    @IBOutlet weak var searchTextField: MyCustomTextField!
     @IBOutlet weak var searchUserDataButtonLabel: UIButton!
     
+    override func viewWillLayoutSubviews() {
+        searchTextField.layoutIfNeeded()
+    }
+    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         
+        view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        
         searchTextField.text = "svovchyn"
+        
+        loginInputView.backgroundColor = .clear
+        loginInputView.layer.cornerRadius = 10
+        
+        searchUserDataButtonLabel.backgroundColor = #colorLiteral(red: 0.9254901961, green: 0.7411764706, blue: 0.5450980392, alpha: 0.867374786)
+        searchUserDataButtonLabel.layer.cornerRadius = 5
+        
+        loginInputView.backgroundColor = #colorLiteral(red: 0, green: 0.2980392157, blue: 0.337254902, alpha: 0.867374786)
+        loginInputView.layer.cornerRadius = 10
+        UIView.animate(withDuration: 2) {
+            self.loginInputView.layer.shadowColor = UIColor.black.cgColor
+            self.loginInputView.layer.shadowRadius = 2.0
+            self.loginInputView.layer.shadowOpacity = 0.5
+            self.loginInputView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        }
+        
+        
         
         searchUserDataButtonLabel.isHidden = true
         OAuthManager.getToken { result in
@@ -35,7 +89,7 @@ class FirstViewController: UIViewController {
             case .success(let newToken):
                 self.token = (newToken["access_token"] as! String)
                 print(self.token ?? "tokena netu")
-                UIView.animate(withDuration: 1) {
+                UIView.animate(withDuration: 2) {
                     self.searchUserDataButtonLabel.isHidden = false
                 }
             case .failure(let error):
@@ -43,21 +97,7 @@ class FirstViewController: UIViewController {
                 self.presentAlert(text: error.localizedDescription)
             }
         }
-//        token = "4e4ef9071a4f594c7ef83c2657dc5f00a94f0524bd4dfac77a0a72de50ed2118"
-    }
-    
-    func rotator() {
-        UIView.animate(withDuration: 0.2, delay: 0, options: .curveLinear, animations: { () -> Void in
-            self.logoImage.transform = self.logoImage.transform.rotated(by: .pi / 2)
-        }) { (finished) -> Void in
-            if self.isRotating {
-                self.rotator()
-            } else {
-                UIView.animate(withDuration: 0.2) {
-                    self.logoImage.transform = CGAffineTransform.identity
-                }
-            }
-        }
+        token = "4e4ef9071a4f594c7ef83c2657dc5f00a94f0524bd4dfac77a0a72de50ed2118"
     }
 }
 
@@ -119,6 +159,20 @@ extension FirstViewController {
         let alert = UIAlertController(title: "Error", message: text, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func rotator() {
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveLinear, animations: { () -> Void in
+            self.logoImage.transform = self.logoImage.transform.rotated(by: .pi / 2)
+        }) { (finished) -> Void in
+            if self.isRotating {
+                self.rotator()
+            } else {
+                UIView.animate(withDuration: 0.2) {
+                    self.logoImage.transform = CGAffineTransform.identity
+                }
+            }
+        }
     }
     
 }
