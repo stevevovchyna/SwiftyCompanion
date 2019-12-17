@@ -173,7 +173,7 @@
                             <constraint firstItem="ZQJ-SM-leV" firstAttribute="trailing" secondItem="crP-zV-Zx0" secondAttribute="trailing" id="dXw-im-1Is"/>
                             <constraint firstItem="o9p-F7-oD1" firstAttribute="trailing" secondItem="crP-zV-Zx0" secondAttribute="trailing" id="hbD-N4-6Q6"/>
                             <constraint firstItem="ZQJ-SM-leV" firstAttribute="leading" secondItem="crP-zV-Zx0" secondAttribute="leading" id="kr0-fO-1kj"/>
-                            <constraint firstItem="ZQJ-SM-leV" firstAttribute="top" secondItem="crP-zV-Zx0" secondAttribute="top" id="rTE-4y-5Mt"/>
+                            <constraint firstItem="ZQJ-SM-leV" firstAttribute="top" secondItem="Ipd-QF-xQk" secondAttribute="top" constant="44" id="rTE-4y-5Mt"/>
                             <constraint firstAttribute="bottom" secondItem="ZQJ-SM-leV" secondAttribute="bottom" id="ra7-GO-Je0"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="crP-zV-Zx0"/>
