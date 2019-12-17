@@ -78,8 +78,6 @@ class SecondViewController: UIViewController {
         }
     }
     
-
-        
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         self.tableView.reloadData()
         switch UIDevice.current.orientation {
@@ -141,6 +139,12 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.cellForRow(at: indexPath)?.isSelected = false
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let animation = Animations.slideIn(duration: 0.5, delay: 0)
+        let animator = Animator(animation: animation)
+        animator.animate(cell: cell, at: indexPath, in: tableView)
     }
 }
 
@@ -275,5 +279,12 @@ extension SecondViewController {
     
     func randomColor() -> UIColor {
         return UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1.0)
+    }
+}
+
+extension UITableView {
+    func isLastVisibleCell(at indexPath: IndexPath) -> Bool {
+        guard let lastIndexPath = indexPathsForVisibleRows?.last else { return false }
+        return lastIndexPath == indexPath
     }
 }
