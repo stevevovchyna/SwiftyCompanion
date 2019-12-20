@@ -9,6 +9,48 @@
 import Foundation
 import UIKit
 
+public func addParallaxToView(vw: UIView) {
+    let amount = 20
+
+    let horizontal = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
+    horizontal.minimumRelativeValue = -amount
+    horizontal.maximumRelativeValue = amount
+
+    let vertical = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
+    vertical.minimumRelativeValue = -amount
+    vertical.maximumRelativeValue = amount
+
+    let group = UIMotionEffectGroup()
+    group.motionEffects = [horizontal, vertical]
+    vw.addMotionEffect(group)
+}
+
+class MyCustomTextField : UITextField {
+    
+    let padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        self.backgroundColor = #colorLiteral(red: 0.9254901961, green: 0.7411764706, blue: 0.5450980392, alpha: 0.640625)
+        self.tintColor = UIColor.white
+        self.borderStyle = UITextField.BorderStyle.roundedRect
+        self.layer.cornerRadius = 10
+    }
+
+    override open func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+
+    override open func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+
+    override open func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+    
+}
+
 extension UIColor {
     public convenience init?(hex: String) {
         let r, g, b, a: CGFloat

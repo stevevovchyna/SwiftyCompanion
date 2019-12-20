@@ -23,7 +23,9 @@ class LevelTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-
+        levelLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        levelLabel.adjustsFontForContentSizeCategory = true
+        levelLabel.numberOfLines = 1
     }
     
 }

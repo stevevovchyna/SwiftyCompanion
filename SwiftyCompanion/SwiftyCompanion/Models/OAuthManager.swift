@@ -22,6 +22,7 @@ class OAuthManager {
         var params = self.parameters
         params["grant_type"] = "client_credentials"
         Alamofire.request(url, method: .post, parameters: params).responseJSON { response in
+                print(response)
                 switch response.result {
                 case .success(let value as [String: Any]):
                     completionHandler(.success(value))
@@ -37,6 +38,7 @@ class OAuthManager {
         let urlQuery = "https://api.intra.42.fr/v2/users/" + query
         let header = ["Authorization" : "Bearer " + token]
         Alamofire.request(urlQuery, method: .get, parameters: self.parameters, headers: header).responseJSON { response in
+//            print(response)
             switch response.result {
             case .success(let value as [String: Any]):
                 completionHandler(.success(value))

@@ -28,8 +28,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10,45" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="adt-at-wap">
-                                <rect key="frame" x="133.5" y="14.5" width="43" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10,45" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" minimumScaleFactor="0.10000000000000001" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="adt-at-wap">
+                                <rect key="frame" x="133.5" y="15" width="43" height="20.5"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -38,8 +38,10 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="0oF-9w-ezE" firstAttribute="top" secondItem="xVF-yX-hcI" secondAttribute="top" id="37M-Qj-sLo"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="adt-at-wap" secondAttribute="trailing" constant="10" id="Z7s-s7-djK"/>
                             <constraint firstAttribute="bottom" secondItem="0oF-9w-ezE" secondAttribute="bottom" id="dLS-hG-g6H"/>
                             <constraint firstItem="adt-at-wap" firstAttribute="centerX" secondItem="xVF-yX-hcI" secondAttribute="centerX" priority="999" id="hHm-go-UEy"/>
+                            <constraint firstItem="adt-at-wap" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="xVF-yX-hcI" secondAttribute="leading" constant="10" id="hsF-U8-0dP"/>
                             <constraint firstItem="0oF-9w-ezE" firstAttribute="leading" secondItem="xVF-yX-hcI" secondAttribute="leading" id="kTv-Qu-FCt"/>
                             <constraint firstItem="adt-at-wap" firstAttribute="centerY" secondItem="xVF-yX-hcI" secondAttribute="centerY" priority="999" id="r1R-zk-lUU"/>
                             <constraint firstAttribute="height" priority="999" constant="44" id="rtu-YM-bTo"/>

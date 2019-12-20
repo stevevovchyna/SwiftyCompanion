@@ -10,33 +10,6 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
-class MyCustomTextField : UITextField {
-    
-    let padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        self.backgroundColor = #colorLiteral(red: 0.9254901961, green: 0.7411764706, blue: 0.5450980392, alpha: 0.640625)
-        self.tintColor = UIColor.white
-        self.borderStyle = UITextField.BorderStyle.roundedRect
-        self.layer.cornerRadius = 10
-    }
-
-    override open func textRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.inset(by: padding)
-    }
-
-    override open func placeholderRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.inset(by: padding)
-    }
-
-    override open func editingRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.inset(by: padding)
-    }
-    
-}
-
-
 class FirstViewController: UIViewController {
     
     var token : String?
@@ -80,8 +53,19 @@ class FirstViewController: UIViewController {
             self.loginInputView.layer.shadowOpacity = 0.5
             self.loginInputView.layer.shadowOffset = CGSize(width: 0, height: 2)
         }
+//        let Keychains = KeychainManager()
         
-        
+//        Keychains.save("123456", for: "Steve")
+//        let savedToken = Keychains.retriveToken(for: "Steve")
+//        print(savedToken ?? "neudachka")
+//
+//        Keychains.updateToken("654321", for: "Steve")
+//        let newSavedToken = Keychains.retriveToken(for: "Steve")
+//        print(newSavedToken ?? "neudacha2")
+//
+//        Keychains.deleteToken(for: "Steve")
+//        let deleted = Keychains.retriveToken(for: "Steve")
+//        print(deleted)
         
         searchUserDataButtonLabel.isHidden = true
         OAuthManager.getToken { result in
@@ -97,7 +81,9 @@ class FirstViewController: UIViewController {
                 self.presentAlert(text: error.localizedDescription)
             }
         }
-        token = "4e4ef9071a4f594c7ef83c2657dc5f00a94f0524bd4dfac77a0a72de50ed2118"
+//        token = "4e4ef9071a4f594c7ef83c2657dc5f00a94f0524bd4dfac77a0a72de50ed2118"
+        
+        addParallaxToView(vw: loginInputView)
     }
 }
 
@@ -107,15 +93,18 @@ extension FirstViewController {
         if searchTextField.text != "" {
             isRotating = true
             rotator()
+            
             OAuthManager.searchUser(query: searchTextField.text!, token: token!) { result in
                 switch result {
                 case .success(let userData):
+                    print(result)
                     if userData.count > 0 {
                         self.userData = UserData(userData: JSON(userData))
                         self.userCoalition = Coalition(userID: self.searchTextField.text!, token: self.token!) {
                             self.projectNames = ProjectNames(uniqueIDs: self.userData?.uniqueIDs ?? [""], token: self.token ?? "") {
                                 self.userImage = UserImage(imageUrl: self.userData?.userImageURL ?? "") {
                                     self.isRotating = false
+                                    self.searchTextField.resignFirstResponder()
                                     self.performSegue(withIdentifier: "showUserData", sender: self)
                                 }
                             }
@@ -130,6 +119,7 @@ extension FirstViewController {
                     self.presentAlert(text: error.localizedDescription)
                 }
             }
+            
         } else {
             self.presentAlert(text: "Please enter some text to make a query")
         }

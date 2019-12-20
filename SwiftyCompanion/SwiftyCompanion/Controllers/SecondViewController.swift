@@ -49,6 +49,7 @@ class SecondViewController: UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 20
+        imageView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         imageView.layer.shadowColor = UIColor.black.cgColor
         imageView.layer.shadowRadius = 3.0
         imageView.layer.shadowOpacity = 0.7
@@ -56,12 +57,12 @@ class SecondViewController: UIViewController {
         
         addLabel(withLabel: usernameLabel,
                  withText: "\(userData?.username ?? "No data") - \(userData?.availableAt ?? "Unavailable")",
-                 withCGRect: CGRect(x: 10, y: 265, width: 0, height: 0),
+                 withCGRect: CGRect(x: 10, y: 221 + (topInset ?? 0), width: 0, height: 0),
                  withColor: userCoalition!.additionalColor1,
                  toView: imageView)
         addLabel(withLabel: emailLabel,
                  withText: userData?.email ?? "No data",
-                 withCGRect: CGRect(x: 10, y: 300, width: 0, height: 0),
+                 withCGRect: CGRect(x: 10, y: 256 + (topInset ?? 0), width: 0, height: 0),
                  withColor: userCoalition!.additionalColor1,
                  toView: imageView)
 
@@ -72,6 +73,11 @@ class SecondViewController: UIViewController {
         backButton.backgroundColor = userCoalition?.additionalColor1
         backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
         generalView.addSubview(backButton)
+        
+        addParallaxToView(vw: backButton)
+        addParallaxToView(vw: tableView)
+        addParallaxToView(vw: usernameLabel)
+        addParallaxToView(vw: emailLabel)
         
         if let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation {
             backButton.frame = interfaceOrientation.isPortrait ? CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50) : CGRect(x: 10 + (topInset ?? 0), y: 10, width: 50, height: 50)
@@ -239,6 +245,7 @@ extension SecondViewController {
         usernameLabel.layer.shadowOpacity = 0.7
         usernameLabel.layer.shadowOffset = CGSize(width: 0, height: 3)
         toView.addSubview(usernameLabel)
+        usernameLabel.sizeToFit()
     }
     
     func shadesAnimation(forView levelCell: LevelTableViewCell) {
