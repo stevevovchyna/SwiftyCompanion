@@ -42,10 +42,10 @@ class FirstViewController: UIViewController {
         loginInputView.backgroundColor = .clear
         loginInputView.layer.cornerRadius = 10
         
-        searchUserDataButtonLabel.backgroundColor = #colorLiteral(red: 0.9254901961, green: 0.7411764706, blue: 0.5450980392, alpha: 0.867374786)
+        searchUserDataButtonLabel.backgroundColor = #colorLiteral(red: 0.8549019694, green: 0.250980407, blue: 0.4784313738, alpha: 0.8388270548)
         searchUserDataButtonLabel.layer.cornerRadius = 5
         
-        loginInputView.backgroundColor = #colorLiteral(red: 0, green: 0.2980392157, blue: 0.337254902, alpha: 0.867374786)
+        loginInputView.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 0.8131688784)
         loginInputView.layer.cornerRadius = 10
         UIView.animate(withDuration: 2) {
             self.loginInputView.layer.shadowColor = UIColor.black.cgColor

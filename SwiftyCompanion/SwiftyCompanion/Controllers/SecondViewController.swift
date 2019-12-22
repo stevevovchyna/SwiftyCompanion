@@ -40,8 +40,6 @@ class SecondViewController: UIViewController {
         tableView.register(UINib(nibName: "GeneralDataTableViewCell", bundle: nil), forCellReuseIdentifier: "generalDataCell")
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
-        tableViewLeftConstraint.constant = 10
-        tableViewRightConstraint.constant = -10
         
         if let imageData = self.userImage?.imageData {
             self.imageView.image = UIImage(data: imageData)
@@ -178,25 +176,28 @@ extension SecondViewController {
     }
     
     func generalDataCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
-        let generalDataCell = tableView.dequeueReusableCell(withIdentifier: "generalDataCell", for: indexPath) as! GeneralDataTableViewCell
-        generalDataCell.fullNameLabel.text = "\(userData?.firstName ?? "Somebody") \(userData?.lastName ?? "Somebody")" 
-        generalDataCell.phoneNumberLabel.text = userData?.phone
-        generalDataCell.evaluationPointsLabel.text = userData?.evaluationPoints
-        generalDataCell.gradeLabel.text = userData?.grade
-        generalDataCell.walletLabel.text = userData?.wallets
-        generalDataCell.poolYearLabel.text = userData?.poolYear
-        generalDataCell.mainView.layer.cornerRadius = 10
-        generalDataCell.backgroundColor = .clear
-        generalDataCell.mainView.backgroundColor = userCoalition?.additionalColor2
-        generalDataCell.leftConstraint.constant = 5
-        generalDataCell.rightConstraint.constant = 5
-        generalDataCell.topConstraint.constant = 5
-        generalDataCell.bottomConstraint.constant = 5
-        generalDataCell.layer.shadowColor = UIColor.black.cgColor
-        generalDataCell.layer.shadowRadius = 2.0
-        generalDataCell.layer.shadowOpacity = 0.5
-        generalDataCell.layer.shadowOffset = CGSize(width: 0, height: 2)
-        return generalDataCell
+        let gCell = tableView.dequeueReusableCell(withIdentifier: "generalDataCell", for: indexPath) as! GeneralDataTableViewCell
+        gCell.fullNameLabel.text = "\(userData?.firstName ?? "Somebody") \(userData?.lastName ?? "Somebody")"
+        gCell.phoneNumberLabel.text = userData?.phone
+        gCell.evaluationPointsLabel.text = userData?.evaluationPoints
+        gCell.gradeLabel.text = userData?.grade
+        gCell.walletLabel.text = userData?.wallets
+        gCell.poolYearLabel.text = userData?.poolYear
+
+        gCell.mainView.layer.cornerRadius = 10
+        gCell.backgroundColor = .clear
+        gCell.mainView.backgroundColor = userCoalition?.additionalColor2
+
+        gCell.leftConstraint.constant = 5
+        gCell.rightConstraint.constant = 5
+        gCell.topConstraint.constant = 5
+        gCell.bottomConstraint.constant = 5
+
+        gCell.layer.shadowColor = UIColor.black.cgColor
+        gCell.layer.shadowRadius = 2.0
+        gCell.layer.shadowOpacity = 0.5
+        gCell.layer.shadowOffset = CGSize(width: 0, height: 2)
+        return gCell
     }
     
     func skillCell(withSkills skills: [Skill], withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {

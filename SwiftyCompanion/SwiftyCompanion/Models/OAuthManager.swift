@@ -27,7 +27,6 @@ class OAuthManager {
         var params = self.parameters
         params["grant_type"] = "client_credentials"
         Alamofire.request(url, method: .post, parameters: params).responseJSON { response in
-                print(response)
                 switch response.result {
                 case .success(let value as [String: Any]):
                     completionHandler(.success(value))
