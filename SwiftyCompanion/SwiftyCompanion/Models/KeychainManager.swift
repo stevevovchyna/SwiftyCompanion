@@ -20,14 +20,13 @@ class KeychainManager {
     
     func updateToken(_ token: String, for account: String) {
         let token = token.data(using: String.Encoding.utf8)!
-        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword]
-        let attirbute: [String: Any] = [kSecAttrAccount as String: account,
-                                        kSecValueData as String: token]
+        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword, kSecAttrAccount as String: account]
+        let attirbute: [String: Any] = [kSecValueData as String: token]
         let status = SecItemUpdate(query as CFDictionary, attirbute as CFDictionary)
-        guard status == errSecSuccess else { return print("keychain update error") }
+        guard status == errSecSuccess else { return print("keychain update error", status) }
     }
         
-    func retriveToken(for account: String) -> String? {
+    func retrieveToken(for account: String) -> String? {
         let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
                                     kSecAttrAccount as String: account,
                                     kSecMatchLimit as String: kSecMatchLimitOne,

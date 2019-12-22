@@ -53,36 +53,6 @@ class FirstViewController: UIViewController {
             self.loginInputView.layer.shadowOpacity = 0.5
             self.loginInputView.layer.shadowOffset = CGSize(width: 0, height: 2)
         }
-//        let Keychains = KeychainManager()
-        
-//        Keychains.save("123456", for: "Steve")
-//        let savedToken = Keychains.retriveToken(for: "Steve")
-//        print(savedToken ?? "neudachka")
-//
-//        Keychains.updateToken("654321", for: "Steve")
-//        let newSavedToken = Keychains.retriveToken(for: "Steve")
-//        print(newSavedToken ?? "neudacha2")
-//
-//        Keychains.deleteToken(for: "Steve")
-//        let deleted = Keychains.retriveToken(for: "Steve")
-//        print(deleted)
-        
-        searchUserDataButtonLabel.isHidden = true
-        OAuthManager.getToken { result in
-            switch result {
-            case .success(let newToken):
-                self.token = (newToken["access_token"] as! String)
-                print(self.token ?? "tokena netu")
-                UIView.animate(withDuration: 2) {
-                    self.searchUserDataButtonLabel.isHidden = false
-                }
-            case .failure(let error):
-                print(error)
-                self.presentAlert(text: error.localizedDescription)
-            }
-        }
-//        token = "4e4ef9071a4f594c7ef83c2657dc5f00a94f0524bd4dfac77a0a72de50ed2118"
-        
         addParallaxToView(vw: loginInputView)
     }
 }
@@ -94,14 +64,13 @@ extension FirstViewController {
             isRotating = true
             rotator()
             
-            OAuthManager.searchUser(query: searchTextField.text!, token: token!) { result in
+            OAuthManager.searchUser(query: searchTextField.text!) { result in
                 switch result {
                 case .success(let userData):
-                    print(result)
                     if userData.count > 0 {
                         self.userData = UserData(userData: JSON(userData))
-                        self.userCoalition = Coalition(userID: self.searchTextField.text!, token: self.token!) {
-                            self.projectNames = ProjectNames(uniqueIDs: self.userData?.uniqueIDs ?? [""], token: self.token ?? "") {
+                        self.userCoalition = Coalition(userID: self.searchTextField.text!) {
+                            self.projectNames = ProjectNames(uniqueIDs: self.userData?.uniqueIDs ?? [""]) {
                                 self.userImage = UserImage(imageUrl: self.userData?.userImageURL ?? "") {
                                     self.isRotating = false
                                     self.searchTextField.resignFirstResponder()

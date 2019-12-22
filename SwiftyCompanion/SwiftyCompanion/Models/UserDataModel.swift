@@ -79,7 +79,7 @@ class Coalition {
     var additionalColor3: UIColor
     
     
-    init(userID: String, token: String, handler: @escaping () -> ()) {
+    init(userID: String, handler: @escaping () -> ()) {
         coalitionName = ""
         coalitionColor = ""
         coalitionScore = ""
@@ -89,6 +89,7 @@ class Coalition {
         additionalColor3 = #colorLiteral(red: 0.8352941176, green: 0.3882352941, blue: 0.3529411765, alpha: 0.7272945205)
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
+        let token = KeychainManager().retrieveToken(for: "access_token")!
         let urlString = "https://api.intra.42.fr/v2/users/\(userID)/coalitions"
         let url = URL(string: urlString)
         var request = URLRequest(url: url!)
@@ -186,8 +187,9 @@ class UserImage {
 class ProjectNames {
     var entities: [String: String]
     
-    init(uniqueIDs: [String], token: String, handler: @escaping () -> ()) {
+    init(uniqueIDs: [String], handler: @escaping () -> ()) {
         let queue = OperationQueue()
+        let token = KeychainManager().retrieveToken(for: "access_token")!
         queue.maxConcurrentOperationCount = 1
         entities = [:]
         for id in uniqueIDs {
