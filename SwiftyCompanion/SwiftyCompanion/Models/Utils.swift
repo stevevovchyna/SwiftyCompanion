@@ -160,3 +160,9 @@ class DownloadOperation : Operation {
         self.task.cancel()
     }
 }
+
+public func presentAlert(text: String, in view: UIViewController) {
+    let alert = UIAlertController(title: "Error", message: text, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: nil))
+    view.present(alert, animated: true, completion: nil)
+}

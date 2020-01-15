@@ -20,8 +20,6 @@ class FirstViewController: UIViewController {
     var isRotating : Bool = false
 
     @IBOutlet weak var logoImage: UIImageView!
-    
-
     @IBOutlet weak var generalView: UIView!
     @IBOutlet weak var loginInputView: UIView!
     @IBOutlet weak var searchTextField: MyCustomTextField!
@@ -32,28 +30,8 @@ class FirstViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        
-        view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        
         searchTextField.text = "svovchyn"
-        
-        loginInputView.backgroundColor = .clear
-        loginInputView.layer.cornerRadius = 10
-        
-        searchUserDataButtonLabel.backgroundColor = #colorLiteral(red: 0.8549019694, green: 0.250980407, blue: 0.4784313738, alpha: 0.8388270548)
-        searchUserDataButtonLabel.layer.cornerRadius = 5
-        
-        loginInputView.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 0.8131688784)
-        loginInputView.layer.cornerRadius = 10
-        UIView.animate(withDuration: 2) {
-            self.loginInputView.layer.shadowColor = UIColor.black.cgColor
-            self.loginInputView.layer.shadowRadius = 2.0
-            self.loginInputView.layer.shadowOpacity = 0.5
-            self.loginInputView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        }
-        addParallaxToView(vw: loginInputView)
     }
 }
 
@@ -62,7 +40,7 @@ extension FirstViewController {
     @IBAction func searchUserDataButton(_ sender: UIButton) {
         if searchTextField.text != "" {
             isRotating = true
-            rotator()
+            rotate42logo()
             
             OAuthManager.searchUser(query: searchTextField.text!) { result in
                 switch result {
@@ -80,17 +58,17 @@ extension FirstViewController {
                         }
                     } else {
                         self.isRotating = false
-                        self.presentAlert(text: "User not found!")
+                        presentAlert(text: "User not found!", in: self)
                     }
                 case .failure(let error):
                     print(error)
                     self.isRotating = false
-                    self.presentAlert(text: error.localizedDescription)
+                    presentAlert(text: error.localizedDescription, in: self)
                 }
             }
             
         } else {
-            self.presentAlert(text: "Please enter some text to make a query")
+            presentAlert(text: "Please enter some text to make a query", in: self)
         }
     }
     
@@ -101,31 +79,37 @@ extension FirstViewController {
             controller.userImage = userImage
             controller.projectNames = projectNames
             controller.userCoalition = userCoalition
-//            if UIApplication.shared.statusBarOrientation.isLandscape {
-//                controller.topInset = view.safeAreaInsets.top
-//                print("land")
-//            } else {
-//                controller.topInset = view.safeAreaInsets.right
-//                print("side")
-//            }
             if let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation {
                 controller.topInset = interfaceOrientation.isPortrait ? view.safeAreaInsets.top : view.safeAreaInsets.right
             }
         }
     }
     
-    func presentAlert(text: String) {
-        let alert = UIAlertController(title: "Error", message: text, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+}
+
+extension FirstViewController {
+    
+    private func setupColorsAndShadows() {
+        loginInputView.layer.cornerRadius = 10
+        searchUserDataButtonLabel.backgroundColor = #colorLiteral(red: 0.8549019694, green: 0.250980407, blue: 0.4784313738, alpha: 0.8388270548)
+        searchUserDataButtonLabel.layer.cornerRadius = 5
+        loginInputView.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 0.8131688784)
+        loginInputView.layer.cornerRadius = 10
+        UIView.animate(withDuration: 2) {
+            self.loginInputView.layer.shadowColor = UIColor.black.cgColor
+            self.loginInputView.layer.shadowRadius = 2.0
+            self.loginInputView.layer.shadowOpacity = 0.5
+            self.loginInputView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        }
+        addParallaxToView(vw: loginInputView)
     }
     
-    func rotator() {
+    private func rotate42logo() {
         UIView.animate(withDuration: 0.2, delay: 0, options: .curveLinear, animations: { () -> Void in
             self.logoImage.transform = self.logoImage.transform.rotated(by: .pi / 2)
         }) { (finished) -> Void in
             if self.isRotating {
-                self.rotator()
+                self.rotate42logo()
             } else {
                 UIView.animate(withDuration: 0.2) {
                     self.logoImage.transform = CGAffineTransform.identity
@@ -133,6 +117,5 @@ extension FirstViewController {
             }
         }
     }
-    
 }
 
