@@ -10,8 +10,55 @@ import Foundation
 import SwiftyJSON
 import Alamofire
 
-class UserData {
+struct User {
+    let username : String
+    let email : String
+    var availableAt : String
+    let level : String
+    let phone : String
+    let firstName : String
+    let lastName : String
+    let wallets : String
+    let evaluationPoints : String
+    let grade : String
+    let poolYear : String
+    let userImageURL: String
+    var skills : [Skill] = []
+    var projects : [Project]?
     
+    var userImage : UIImage?
+    
+    var mainColor : UIColor?
+    var additionalColor1: UIColor?
+    var additionalColor2: UIColor?
+    var additionalColor3: UIColor?
+    var projectNames: [String: String]?
+    
+    init(_ userData: NSDictionary) {
+        username = userData["login"] as! String
+        email = userData["email"] as! String
+        availableAt = (userData["location"] as? NSNull) != nil ? "Unavailable" : userData["location"] as! String
+        let cursus = userData["cursus_users"] as! NSArray
+        let cursusZero = cursus[0] as! NSDictionary
+        level = String(cursusZero["level"] as! Double)
+        phone = userData["phone"] as! String
+        firstName = userData["first_name"] as! String
+        lastName = userData["last_name"] as! String
+        wallets = String(userData["wallet"] as! Double)
+        evaluationPoints = String(userData["correction_point"] as! Double)
+        grade = cursusZero["grade"] as! String
+        poolYear = userData["pool_year"] as! String
+        userImageURL = userData["image_url"] as! String
+        for skill in cursusZero["skills"] as! NSArray {
+            skills.append(Skill(skill: skill as! NSDictionary))
+        }
+        skills.sort { $0.skillName < $1.skillName }
+    }
+    
+}
+
+struct UserData {
+
     let username : String
     let email : String
     var availableAt : String
@@ -25,10 +72,10 @@ class UserData {
     let poolYear : String
     var skills : [Skill]
     var projects : [Project]
-    
+
     var uniqueIDs : [String]
     var userImageURL : String
-    
+
     init(userData : JSON) {
         username = userData["login"].stringValue
         email = userData["email"].stringValue
@@ -43,9 +90,9 @@ class UserData {
         poolYear = userData["pool_year"].stringValue
         userImageURL = userData["image_url"].stringValue
         skills = []
-        for skill in userData["cursus_users"][0]["skills"] {
-            skills.append(Skill(skill: skill.1))
-        }
+//        for skill in userData["cursus_users"][0]["skills"] {
+//            skills.append(Skill(skill: skill.1))
+//        }
         skills.sort { $0.skillName < $1.skillName }
         projects = []
         for project in userData["projects_users"] {
@@ -54,18 +101,14 @@ class UserData {
             }
         }
         projects.sort { $0.projectName < $1.projectName }
-        uniqueIDs = UserData.getRushIDs(projects: projects)
-    }
-    
-    static func getRushIDs(projects: [Project]) -> [String] {
         var IDs : [String] = []
         for id in projects {
             if let i = id.projectParentID {
                 IDs.append(i)
             }
         }
-        let uniqueIDs = Array(Set(IDs))
-        return uniqueIDs
+        let unique = Array(Set(IDs))
+        uniqueIDs = unique
     }
 }
 
@@ -89,12 +132,10 @@ class Coalition {
         additionalColor3 = #colorLiteral(red: 0.8352941176, green: 0.3882352941, blue: 0.3529411765, alpha: 0.7272945205)
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
-        let token = KeychainManager().retrieveToken(for: "access_token")!
         let urlString = "https://api.intra.42.fr/v2/users/\(userID)/coalitions"
         let url = URL(string: urlString)
         var request = URLRequest(url: url!)
         request.httpMethod = "GET"
-        request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
         let operation = DownloadOperation(session: URLSession.shared, dataTaskURLRequest: request, completionHandler: { (data, response, error) in
             if let data = data {
                 self.coalitionName = JSON(data)[0]["name"].stringValue
@@ -135,7 +176,7 @@ class Coalition {
     }
 }
 
-class Project {
+struct Project {
     let projectName : String
     let projectStatus : String
     let projectIsValidated : Bool
@@ -158,13 +199,13 @@ class Project {
     }
 }
 
-class Skill {
+struct Skill {
     let skillName : String
     let skillLevel : String
     
-    init(skill : JSON) {
-        skillName = skill["name"].stringValue
-        skillLevel = skill["level"].stringValue
+    init(skill : NSDictionary) {
+        skillName = skill["name"] as! String
+        skillLevel = String(skill["level"] as! Double)
     }
 }
 
@@ -189,7 +230,6 @@ class ProjectNames {
     
     init(uniqueIDs: [String], handler: @escaping () -> ()) {
         let queue = OperationQueue()
-        let token = KeychainManager().retrieveToken(for: "access_token")!
         queue.maxConcurrentOperationCount = 1
         entities = [:]
         for id in uniqueIDs {
@@ -197,7 +237,6 @@ class ProjectNames {
             let url = URL(string: urlString)
             var request = URLRequest(url: url!)
             request.httpMethod = "GET"
-            request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
             let operation = DownloadOperation(session: URLSession.shared, dataTaskURLRequest: request, completionHandler: { (data, response, error) in
                 if let data = data {
                     self.entities[id] = JSON(data)["name"].stringValue

@@ -108,59 +108,6 @@ class myLabel: UILabel {
     
 }
 
-class DownloadOperation : Operation {
-    
-    private var task : URLSessionDataTask!
-    
-    enum OperationState : Int {
-        case ready
-        case executing
-        case finished
-    }
-    
-    private var state : OperationState = .ready {
-        willSet {
-            self.willChangeValue(forKey: "isExecuting")
-            self.willChangeValue(forKey: "isFinished")
-        }
-        
-        didSet {
-            self.didChangeValue(forKey: "isExecuting")
-            self.didChangeValue(forKey: "isFinished")
-        }
-    }
-    
-    override var isReady: Bool { return state == .ready }
-    override var isExecuting: Bool { return state == .executing }
-    override var isFinished: Bool { return state == .finished }
-  
-    init(session: URLSession, dataTaskURLRequest: URLRequest, completionHandler: ((Data?, URLResponse?, Error?) -> Void)?) {
-        super.init()
-        
-        task = session.dataTask(with: dataTaskURLRequest, completionHandler: { [weak self] (data, response, error) in
-
-            if let completionHandler = completionHandler {
-                completionHandler(data, response, error)
-            }
-            self?.state = .finished
-        })
-    }
-
-    override func start() {
-        if self.isCancelled {
-            state = .finished
-            return
-        }
-        state = .executing
-        self.task.resume()
-    }
-
-    override func cancel() {
-        super.cancel()
-        self.task.cancel()
-    }
-}
-
 public func presentAlert(text: String, in view: UIViewController) {
     let alert = UIAlertController(title: "Error", message: text, preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: nil))
