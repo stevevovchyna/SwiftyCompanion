@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import SwiftyJSON
-import Foundation
 
 class SecondViewController: UIViewController {
     

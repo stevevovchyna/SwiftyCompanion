@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import SwiftyJSON
-import Alamofire
+import UIKit
 
 struct User {
     let username : String
