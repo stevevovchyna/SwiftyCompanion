@@ -15,9 +15,11 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var tableViewRightConstraint: NSLayoutConstraint!
     @IBOutlet weak var tableViewLeftConstraint: NSLayoutConstraint!
     @IBOutlet weak var imageHeightConstraint: NSLayoutConstraint!
+    
     @IBOutlet var generalView: UIView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var imageView: UIImageView!
+    
     let usernameLabel = myLabel()
     let emailLabel = myLabel()
     let availabilityLabel = myLabel()
@@ -31,24 +33,10 @@ class SecondViewController: UIViewController {
         
         guard let user = user else { return }
         imageView.image = user.userImage
-        generalView.backgroundColor = .white
-        
         tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
-        tableView.backgroundColor = .white
         tableView.register(UINib(nibName: "LevelTableViewCell", bundle: nil), forCellReuseIdentifier: "levelCell")
         tableView.register(UINib(nibName: "GeneralDataTableViewCell", bundle: nil), forCellReuseIdentifier: "generalDataCell")
-        tableView.separatorStyle = .none
-        tableView.showsVerticalScrollIndicator = false
-        
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 20
-        imageView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-        imageView.layer.shadowColor = UIColor.black.cgColor
-        imageView.layer.shadowRadius = 3.0
-        imageView.layer.shadowOpacity = 0.7
-        imageView.layer.shadowOffset = CGSize(width: 0, height: 3)
-        
+        setUpImageView()
         addLabel(withLabel: usernameLabel,
                  withText: "\(user.username) - \(user.availableAt)",
                  withCGRect: CGRect(x: 10, y: 221 + (topInset ?? 0), width: 0, height: 0),
@@ -59,20 +47,11 @@ class SecondViewController: UIViewController {
                  withCGRect: CGRect(x: 10, y: 256 + (topInset ?? 0), width: 0, height: 0),
                  withColor: user.colors.additionalColor1,
                  toView: imageView)
-
-        backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
-        backButton.layer.cornerRadius = 25
-        backButton.setTitle("<", for: .normal)
-        backButton.setTitleColor(.white, for: .normal)
-        backButton.backgroundColor = user.colors.additionalColor1
-        backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
-        generalView.addSubview(backButton)
-        
+        addBackButton(with: user.colors.additionalColor1)
         addParallaxToView(vw: backButton)
         addParallaxToView(vw: tableView)
         addParallaxToView(vw: usernameLabel)
         addParallaxToView(vw: emailLabel)
-        
         if let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation {
             backButton.frame = interfaceOrientation.isPortrait ? CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50) : CGRect(x: 10 + (topInset ?? 0), y: 10, width: 50, height: 50)
         }
@@ -98,6 +77,10 @@ class SecondViewController: UIViewController {
         usernameLabel.frame = CGRect(x: 10, y: y - 79, width: 0, height: 0)
         usernameLabel.sizeToFit()
         emailLabel.sizeToFit()
+    }
+    
+    @objc func backButtonClicked() {
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -152,7 +135,7 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension SecondViewController {
     
-    func levelCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
+    private func levelCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
         cellDimentionalSetUp(forCell: levelCell, withMainColor: user.colors.mainColor, withAddColor: user.colors.additionalColor1, withYInsets: 10, withCellHeigth: 44)
         let cellWidth = calculateCellWidth(forCell: levelCell)
@@ -164,7 +147,7 @@ extension SecondViewController {
         return levelCell
     }
     
-    func dividerCell(withName cellName: String, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
+    private func dividerCell(withName cellName: String, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
         cellDimentionalSetUp(forCell: levelCell, withMainColor: .clear, withAddColor: .black, withYInsets: 10, withCellHeigth: 30)
         levelCell.levelLabel.text = cellName
@@ -173,7 +156,7 @@ extension SecondViewController {
         return levelCell
     }
     
-    func generalDataCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
+    private func generalDataCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
         let gCell = tableView.dequeueReusableCell(withIdentifier: "generalDataCell", for: indexPath) as! GeneralDataTableViewCell
         gCell.fullNameLabel.text = "\(user.firstName) \(user.lastName)"
         gCell.phoneNumberLabel.text = user.phone
@@ -198,7 +181,7 @@ extension SecondViewController {
         return gCell
     }
     
-    func skillCell(withSkills skills: [Skill], withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
+    private func skillCell(withSkills skills: [Skill], withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
         cellDimentionalSetUp(forCell: levelCell, withMainColor: user.colors.additionalColor2, withAddColor: user.colors.mainColor, withYInsets: 2, withCellHeigth: 44)
         let cellWidth = calculateCellWidth(forCell: levelCell)
@@ -210,7 +193,7 @@ extension SecondViewController {
         return levelCell
     }
     
-    func projectCell(withSkillsCount skillsCount: Int, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
+    private func projectCell(withSkillsCount skillsCount: Int, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
         cellDimentionalSetUp(forCell: levelCell, withMainColor: user.colors.mainColor, withAddColor: user.colors.mainColor, withYInsets: 2, withCellHeigth: 44)
         let cellWidth = calculateCellWidth(forCell: levelCell)
@@ -229,7 +212,27 @@ extension SecondViewController {
 }
 
 extension SecondViewController {
-    func addLabel(withLabel usernameLabel: UILabel, withText labelText: String, withCGRect rect: CGRect, withColor color: UIColor, toView: UIView) {
+    
+    private func setUpImageView() {
+        imageView.layer.cornerRadius = 20
+        imageView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+        imageView.layer.shadowColor = UIColor.black.cgColor
+        imageView.layer.shadowRadius = 3.0
+        imageView.layer.shadowOpacity = 0.7
+        imageView.layer.shadowOffset = CGSize(width: 0, height: 3)
+    }
+    
+    private func addBackButton(with color: UIColor) {
+        backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
+        backButton.layer.cornerRadius = 25
+        backButton.setTitle("<", for: .normal)
+        backButton.setTitleColor(.white, for: .normal)
+        backButton.backgroundColor = color
+        backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
+        generalView.addSubview(backButton)
+    }
+    
+    private func addLabel(withLabel usernameLabel: UILabel, withText labelText: String, withCGRect rect: CGRect, withColor color: UIColor, toView: UIView) {
         usernameLabel.text = labelText
         usernameLabel.frame = rect
         usernameLabel.backgroundColor = color
@@ -242,7 +245,7 @@ extension SecondViewController {
         usernameLabel.sizeToFit()
     }
     
-    func shadesAnimation(forView levelCell: LevelTableViewCell) {
+    private func shadesAnimation(forView levelCell: LevelTableViewCell) {
         UIView.animate(withDuration: 2) {
             levelCell.veryBackgroundLabel.layer.shadowColor = UIColor.black.cgColor
             levelCell.veryBackgroundLabel.layer.shadowRadius = 2.0
@@ -251,7 +254,7 @@ extension SecondViewController {
         }
     }
     
-    func cellDimentionalSetUp(forCell levelCell: LevelTableViewCell, withMainColor mainColor: UIColor, withAddColor addColor: UIColor, withYInsets YInsets: CGFloat, withCellHeigth cellHeight: CGFloat) {
+    private func cellDimentionalSetUp(forCell levelCell: LevelTableViewCell, withMainColor mainColor: UIColor, withAddColor addColor: UIColor, withYInsets YInsets: CGFloat, withCellHeigth cellHeight: CGFloat) {
         levelCell.topConstraint.constant = YInsets
         levelCell.bottomConstraint.constant = YInsets
         levelCell.rightInsetConstraint.constant = 5
@@ -267,25 +270,12 @@ extension SecondViewController {
         shadesAnimation(forView: levelCell)
     }
     
-    func calculateCellWidth(forCell levelCell: LevelTableViewCell) -> CGFloat {
+    private func calculateCellWidth(forCell levelCell: LevelTableViewCell) -> CGFloat {
         let tableInsets = tableViewLeftConstraint.constant + (tableViewRightConstraint.constant < 0 ? -tableViewRightConstraint.constant : tableViewRightConstraint.constant)
         let cellInsets = levelCell.rightInsetConstraint.constant - levelCell.leftConstraint.constant
         let width = tableView.frame.size.width - cellInsets - tableInsets
         return width
     }
 
-    @objc func backButtonClicked() {
-        navigationController?.popViewController(animated: true)
-    }
     
-    func randomColor() -> UIColor {
-        return UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1.0)
-    }
-}
-
-extension UITableView {
-    func isLastVisibleCell(at indexPath: IndexPath) -> Bool {
-        guard let lastIndexPath = indexPathsForVisibleRows?.last else { return false }
-        return lastIndexPath == indexPath
-    }
 }

@@ -9,6 +9,13 @@
 import Foundation
 import UIKit
 
+extension UITableView {
+    func isLastVisibleCell(at indexPath: IndexPath) -> Bool {
+        guard let lastIndexPath = indexPathsForVisibleRows?.last else { return false }
+        return lastIndexPath == indexPath
+    }
+}
+
 public func addParallaxToView(vw: UIView) {
     let amount = 10
 
@@ -23,6 +30,10 @@ public func addParallaxToView(vw: UIView) {
     let group = UIMotionEffectGroup()
     group.motionEffects = [horizontal, vertical]
     vw.addMotionEffect(group)
+}
+
+public func randomColor() -> UIColor {
+    return UIColor(red: CGFloat.random(in: 0...1), green: CGFloat.random(in: 0...1), blue: CGFloat.random(in: 0...1), alpha: 1.0)
 }
 
 class MyCustomTextField : UITextField {

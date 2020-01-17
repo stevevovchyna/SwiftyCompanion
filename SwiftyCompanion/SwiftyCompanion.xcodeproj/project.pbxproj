@@ -111,7 +111,6 @@
 				10C1ACB723AADCF5008B16C7 /* KeychainManager.swift */,
 				105FAAD223A288160004FF20 /* UserDataModel.swift */,
 				105FAAD423A3F4840004FF20 /* Utils.swift */,
-				105FAACD23A234890004FF20 /* Cells */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -121,6 +120,7 @@
 			children = (
 				105FAAB223A0E88C0004FF20 /* Main.storyboard */,
 				105FAAB723A0E8920004FF20 /* LaunchScreen.storyboard */,
+				105FAACD23A234890004FF20 /* Cells */,
 			);
 			path = Views;
 			sourceTree = "<group>";
