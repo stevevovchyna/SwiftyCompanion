@@ -12,11 +12,7 @@ import SwiftyJSON
 
 class FirstViewController: UIViewController {
     
-    var token : String?
-//    var userData : UserData?
-//    var userImage : UserImage?
-    var projectNames : ProjectNames?
-    var userCoalition : Coalition?
+    var user: User?
     var isRotating : Bool = false
     let oauthManager = OAuthManager()
 
@@ -42,41 +38,22 @@ extension FirstViewController {
         if searchTextField.text != "" {
             isRotating = true
             rotate42logo()
-            oauthManager.userSearchRequest(for: searchTextField.text!) { result in
-                switch result {
-                case .failure(let error):
-                    print(error)
-                case .success(let data):
-                    let new = User(data)
-                    print(new)
+            oauthManager.userSearchRequests(for: searchTextField.text!.lowercased()) { (result) in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .failure(let error):
+                        self.isRotating = false
+                        presentAlert(text: error, in: self)
+                        print(error)
+                    case .success(let data, let image, let colors):
+                        let foundUser = User(data, image, colors)
+                        self.isRotating = false
+                        self.searchTextField.resignFirstResponder()
+                        self.user = foundUser
+                        self.performSegue(withIdentifier: "showUserData", sender: self)
+                    }
                 }
             }
-            
-//            OAuthManager.searchUser(query: searchTextField.text!) { result in
-//                switch result {
-//                case .success(let userData):
-//                    if userData.count > 0 {
-//                        self.userData = UserData(userData: JSON(userData))
-//                        self.userCoalition = Coalition(userID: self.searchTextField.text!) {
-//                            self.projectNames = ProjectNames(uniqueIDs: self.userData?.uniqueIDs ?? [""]) {
-//                                self.userImage = UserImage(imageUrl: self.userData?.userImageURL ?? "") {
-//                                    self.isRotating = false
-//                                    self.searchTextField.resignFirstResponder()
-//                                    self.performSegue(withIdentifier: "showUserData", sender: self)
-//                                }
-//                            }
-//                        }
-//                    } else {
-//                        self.isRotating = false
-//                        presentAlert(text: "User not found!", in: self)
-//                    }
-//                case .failure(let error):
-//                    print(error)
-//                    self.isRotating = false
-//                    presentAlert(text: error.localizedDescription, in: self)
-//                }
-//            }
-            
         } else {
             presentAlert(text: "Please enter some text to make a query", in: self)
         }
@@ -85,10 +62,7 @@ extension FirstViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showUserData" {
             let controller = segue.destination as! SecondViewController
-//            controller.userData = userData
-//            controller.userImage = userImage
-            controller.projectNames = projectNames
-            controller.userCoalition = userCoalition
+            controller.user = user
             if let interfaceOrientation = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.windowScene?.interfaceOrientation {
                 controller.topInset = interfaceOrientation.isPortrait ? view.safeAreaInsets.top : view.safeAreaInsets.right
             }

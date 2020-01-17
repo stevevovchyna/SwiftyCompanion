@@ -23,15 +23,14 @@ class SecondViewController: UIViewController {
     let availabilityLabel = myLabel()
     let backButton = UIButton()
     
-    var userData : UserData?
-    var userImage : UserImage?
-    var userCoalition : Coalition?
-    var projectNames : ProjectNames?
+    var user: User?
     var topInset : CGFloat?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        guard let user = user else { return }
+        imageView.image = user.userImage
         generalView.backgroundColor = .white
         
         tableView.contentInset = UIEdgeInsets(top: 300, left: 0, bottom: 0, right: 0)
@@ -41,9 +40,6 @@ class SecondViewController: UIViewController {
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         
-        if let imageData = self.userImage?.imageData {
-            self.imageView.image = UIImage(data: imageData)
-        }
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 20
@@ -54,21 +50,21 @@ class SecondViewController: UIViewController {
         imageView.layer.shadowOffset = CGSize(width: 0, height: 3)
         
         addLabel(withLabel: usernameLabel,
-                 withText: "\(userData?.username ?? "No data") - \(userData?.availableAt ?? "Unavailable")",
+                 withText: "\(user.username) - \(user.availableAt)",
                  withCGRect: CGRect(x: 10, y: 221 + (topInset ?? 0), width: 0, height: 0),
-                 withColor: userCoalition!.additionalColor1,
+                 withColor: user.colors.additionalColor1,
                  toView: imageView)
         addLabel(withLabel: emailLabel,
-                 withText: userData?.email ?? "No data",
+                 withText: user.email,
                  withCGRect: CGRect(x: 10, y: 256 + (topInset ?? 0), width: 0, height: 0),
-                 withColor: userCoalition!.additionalColor1,
+                 withColor: user.colors.additionalColor1,
                  toView: imageView)
 
         backButton.frame = CGRect(x: 10, y: 10 + (topInset ?? 0), width: 50, height: 50)
         backButton.layer.cornerRadius = 25
         backButton.setTitle("<", for: .normal)
         backButton.setTitleColor(.white, for: .normal)
-        backButton.backgroundColor = userCoalition?.additionalColor1
+        backButton.backgroundColor = user.colors.additionalColor1
         backButton.addTarget(self, action: #selector(backButtonClicked), for: .touchUpInside)
         generalView.addSubview(backButton)
         
@@ -108,7 +104,8 @@ class SecondViewController: UIViewController {
 extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4 + (userData?.projects.count ?? 0) + (userData?.skills.count ?? 0)
+        guard let user = user else { return 0 }
+        return 4 + (user.projects.count) + (user.skills.count)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -116,26 +113,27 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let skillsCount = (userData?.skills.count ?? 0) == 0 ? 1 : userData!.skills.count
-        let projectsCount = (userData?.projects.count ?? 0) == 0 ? 1 : userData!.projects.count
+        guard let user = user else { return dividerCell(withName: "No data", withIndexPath: indexPath, withTableView: tableView) }
+        let skillsCount = (user.skills.count) == 0 ? 1 : user.skills.count
+        let projectsCount = (user.projects.count) == 0 ? 1 : user.projects.count
         
         switch indexPath.row {
         case 0:
-            return levelCell(withIndexPath: indexPath, withTableView: tableView)
+            return levelCell(withIndexPath: indexPath, withTableView: tableView, for: user)
         case 1:
-            return generalDataCell(withIndexPath: indexPath, withTableView: tableView)
+            return generalDataCell(withIndexPath: indexPath, withTableView: tableView, for: user)
         case 2:
             return dividerCell(withName: "Skills", withIndexPath: indexPath, withTableView: tableView)
         case 3...skillsCount + 2:
-            if let skills = userData?.skills, userData?.skills.count != 0 {
-                return skillCell(withSkills: skills, withIndexPath: indexPath, withTableView: tableView)
+            if user.skills.count != 0 {
+                return skillCell(withSkills: user.skills, withIndexPath: indexPath, withTableView: tableView, for: user)
             } else {
                 return dividerCell(withName: "Projects", withIndexPath: indexPath, withTableView: tableView)
             }
         case skillsCount + 3:
             return dividerCell(withName: "Projects", withIndexPath: indexPath, withTableView: tableView)
         case skillsCount + 4...projectsCount + skillsCount + 3:
-            return projectCell(withSkillsCount: skillsCount, withIndexPath: indexPath, withTableView: tableView)
+            return projectCell(withSkillsCount: skillsCount, withIndexPath: indexPath, withTableView: tableView, for: user)
         default:
             return dividerCell(withName: "No data", withIndexPath: indexPath, withTableView: tableView)
         }
@@ -154,11 +152,11 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension SecondViewController {
     
-    func levelCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
+    func levelCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
-        cellDimentionalSetUp(forCell: levelCell, withMainColor: userCoalition?.mainColor, withAddColor: userCoalition?.additionalColor1, withYInsets: 10, withCellHeigth: 44)
+        cellDimentionalSetUp(forCell: levelCell, withMainColor: user.colors.mainColor, withAddColor: user.colors.additionalColor1, withYInsets: 10, withCellHeigth: 44)
         let cellWidth = calculateCellWidth(forCell: levelCell)
-        let floatLevel = ((userData?.level ?? "0") as NSString).floatValue
+        let floatLevel = ((user.level) as NSString).floatValue
         levelCell.levelLabel.text = String(format: "%.2f%", floatLevel)
         levelCell.levelLabel.textColor = .black
         let rightInset = cellWidth - (cellWidth / 21) * CGFloat(floatLevel)
@@ -175,18 +173,18 @@ extension SecondViewController {
         return levelCell
     }
     
-    func generalDataCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
+    func generalDataCell(withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
         let gCell = tableView.dequeueReusableCell(withIdentifier: "generalDataCell", for: indexPath) as! GeneralDataTableViewCell
-        gCell.fullNameLabel.text = "\(userData?.firstName ?? "Somebody") \(userData?.lastName ?? "Somebody")"
-        gCell.phoneNumberLabel.text = userData?.phone
-        gCell.evaluationPointsLabel.text = userData?.evaluationPoints
-        gCell.gradeLabel.text = userData?.grade
-        gCell.walletLabel.text = userData?.wallets
-        gCell.poolYearLabel.text = userData?.poolYear
+        gCell.fullNameLabel.text = "\(user.firstName) \(user.lastName)"
+        gCell.phoneNumberLabel.text = user.phone
+        gCell.evaluationPointsLabel.text = user.evaluationPoints
+        gCell.gradeLabel.text = user.grade
+        gCell.walletLabel.text = user.wallets
+        gCell.poolYearLabel.text = user.poolYear
 
         gCell.mainView.layer.cornerRadius = 10
         gCell.backgroundColor = .clear
-        gCell.mainView.backgroundColor = userCoalition?.additionalColor2
+        gCell.mainView.backgroundColor = user.colors.additionalColor2
 
         gCell.leftConstraint.constant = 5
         gCell.rightConstraint.constant = 5
@@ -200,9 +198,9 @@ extension SecondViewController {
         return gCell
     }
     
-    func skillCell(withSkills skills: [Skill], withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
+    func skillCell(withSkills skills: [Skill], withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
-        cellDimentionalSetUp(forCell: levelCell, withMainColor: userCoalition?.additionalColor2, withAddColor: userCoalition?.mainColor, withYInsets: 2, withCellHeigth: 44)
+        cellDimentionalSetUp(forCell: levelCell, withMainColor: user.colors.additionalColor2, withAddColor: user.colors.mainColor, withYInsets: 2, withCellHeigth: 44)
         let cellWidth = calculateCellWidth(forCell: levelCell)
         let skillLevel = (skills[indexPath.row - 3].skillLevel as NSString).floatValue
         levelCell.levelLabel.text = "\(skills[indexPath.row - 3].skillName) - \(String(format: "%.2f", skillLevel))"
@@ -212,24 +210,19 @@ extension SecondViewController {
         return levelCell
     }
     
-    func projectCell(withSkillsCount skillsCount: Int, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView) -> UITableViewCell {
+    func projectCell(withSkillsCount skillsCount: Int, withIndexPath indexPath: IndexPath, withTableView tableView: UITableView, for user: User) -> UITableViewCell {
         let levelCell = tableView.dequeueReusableCell(withIdentifier: "levelCell", for: indexPath) as! LevelTableViewCell
-        cellDimentionalSetUp(forCell: levelCell, withMainColor: userCoalition?.mainColor, withAddColor: userCoalition?.mainColor, withYInsets: 2, withCellHeigth: 44)
+        cellDimentionalSetUp(forCell: levelCell, withMainColor: user.colors.mainColor, withAddColor: user.colors.mainColor, withYInsets: 2, withCellHeigth: 44)
         let cellWidth = calculateCellWidth(forCell: levelCell)
-        if let project = userData?.projects[indexPath.row - (skillsCount + 4)] {
-            let possibleParent = project.projectIsInPiscine ? "\(projectNames?.entities[project.projectParentID!] ?? "No data") " : ""
-            levelCell.levelLabel.text = possibleParent + "\(project.projectName) - \(project.projectFinalMark)"
-            levelCell.levelLabel.textColor = .black
-            levelCell.backgroundLabel.backgroundColor = project.projectIsValidated ? userCoalition?.additionalColor1 : userCoalition?.additionalColor3
-            if project.projectFinalMark != "0", project.projectFinalMark != "-42" {
-                let rightInset = cellWidth - ((cellWidth / 125) * CGFloat(Double(project.projectFinalMark) ?? 0))
-                levelCell.rightConstraint.constant = rightInset
-            } else {
-                levelCell.rightConstraint.constant = 0
-            }
+        let project = user.projects[indexPath.row - (skillsCount + 4)]
+        levelCell.levelLabel.text = "\(project.projectSlug) - \(project.projectFinalMark)"
+        levelCell.levelLabel.textColor = .black
+        levelCell.backgroundLabel.backgroundColor = project.projectIsValidated ? user.colors.additionalColor1 : user.colors.additionalColor3
+        if project.projectFinalMark != "0", project.projectFinalMark != "-42" {
+            let rightInset = cellWidth - ((cellWidth / 125) * CGFloat(Double(project.projectFinalMark) ?? 0))
+            levelCell.rightConstraint.constant = rightInset
         } else {
-            levelCell.levelLabel.text = "No data"
-            levelCell.backgroundLabel.backgroundColor = userCoalition?.mainColor
+            levelCell.rightConstraint.constant = 0
         }
         return levelCell
     }
@@ -258,7 +251,7 @@ extension SecondViewController {
         }
     }
     
-    func cellDimentionalSetUp(forCell levelCell: LevelTableViewCell, withMainColor mainColor: UIColor?, withAddColor addColor: UIColor?, withYInsets YInsets: CGFloat, withCellHeigth cellHeight: CGFloat) {
+    func cellDimentionalSetUp(forCell levelCell: LevelTableViewCell, withMainColor mainColor: UIColor, withAddColor addColor: UIColor, withYInsets YInsets: CGFloat, withCellHeigth cellHeight: CGFloat) {
         levelCell.topConstraint.constant = YInsets
         levelCell.bottomConstraint.constant = YInsets
         levelCell.rightInsetConstraint.constant = 5

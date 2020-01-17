@@ -113,3 +113,23 @@ public func presentAlert(text: String, in view: UIViewController) {
     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: nil))
     view.present(alert, animated: true, completion: nil)
 }
+
+extension String {
+    public func camelCased(with separator: Character) -> String {
+        return self.lowercased()
+            .split(separator: separator)
+            .enumerated()
+            .map { $0.offset > 0 ? $0.element.capitalized : $0.element.lowercased() }
+            .joined()
+    }
+    
+    func camelCaseToWords() -> String {
+        return unicodeScalars.reduce("") {
+            if CharacterSet.uppercaseLetters.contains($1) {
+                return ($0 + " " + String($1))
+            } else {
+                return $0 + String($1)
+            }
+        }
+    }
+}

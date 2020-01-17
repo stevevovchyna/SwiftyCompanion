@@ -14,6 +14,11 @@ enum KeyChainOption<T> {
     case update(T)
 }
 
+enum SearchResult<T, U, V> {
+    case success(T, U, V)
+    case failure(String)
+}
+
 enum Result<T> {
     case success(T)
     case failure(String)
@@ -23,6 +28,12 @@ enum OperationState : Int {
     case ready
     case executing
     case finished
+}
+
+enum RequestType {
+    case search
+    case getImage
+    case getCoalition
 }
 
 class DownloadOperation : Operation {
@@ -77,51 +88,64 @@ class OAuthManager {
         queue.maxConcurrentOperationCount = 1
     }
 
-    public func userSearchRequest(for query: String, completion: @escaping (Result<NSDictionary>) -> ()) {
+    public func userSearchRequests(for query: String, completion: @escaping (SearchResult<NSDictionary, UIImage, Colors>) -> ()) {
         checkToken { result in
             switch result {
             case .success(let token):
-                let urlString = "https://api.intra.42.fr/v2/users/" + query
-                let url = URL(string: urlString)
-                var request = URLRequest(url: url!)
-                request.httpMethod = "get"
-                let bearer = "Bearer \(token)"
-                request.setValue(bearer, forHTTPHeaderField: "Authorization")
-                URLSession.shared.dataTask(with: request) { (data, response, error) in
-                    if let error = error {
-                        return completion(.failure(error.localizedDescription))
-                    }
-                    guard let respons = response as? HTTPURLResponse, (200...299).contains(respons.statusCode) else {
+                var userData : NSDictionary?
+                var image : UIImage?
+                var coalitionColors : Colors?
+                
+                
+                let searchRequest = self.createRequest(for: query, with: token, .search)
+                let imageRequest = self.createRequest(for: query, with: token, .getImage)
+                let coalitionRequest = self.createRequest(for: query, with: token, .getCoalition)
+                
+                let operation = DownloadOperation(session: URLSession.shared, dataTaskURLRequest: searchRequest) { (data, response, error) in
+                    if let error = error { return completion(.failure(error.localizedDescription)) }
+                    guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
                         return completion(.failure("Server error"))
                     }
                     guard let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary else {
                         return completion(.failure("There was an issue with the returned data"))
                     }
-                    completion(.success(json))
-                }.resume()
+                    userData = json
+
+                }
+                                
+                let imageoperation = DownloadOperation(session: URLSession.shared, dataTaskURLRequest: imageRequest) { (data, response, error) in
+                    if let error = error { return completion(.failure(error.localizedDescription)) }
+                    guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
+                        return completion(.failure("Server error"))
+                    }
+                    guard let data = data else { return completion(.failure("There was an issue with the returned data")) }
+                    image = UIImage(data: data)
+                }
+
+                let coalitionoperation = DownloadOperation(session: URLSession.shared, dataTaskURLRequest: coalitionRequest) { (data, response, error) in
+                    if let error = error { return completion(.failure(error.localizedDescription)) }
+                    guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
+                        return completion(.failure("Server error"))
+                    }
+                    guard let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []) as? NSArray else {
+                        return completion(.failure("There was an issue with the returned data"))
+                    }
+                    let coalitionColor = ((json[0] as! NSDictionary)["color"] as! String) + "ff"
+                    coalitionColors = self.getCoalitionColorScheme(for: coalitionColor)
+                    completion(.success(userData!, image!, coalitionColors!))
+                }
+
+                self.queue.addOperation(operation)
+                self.queue.addOperation(imageoperation)
+                self.queue.addOperation(coalitionoperation)
+                
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
     
-//    public func searchRequest(query: String, token: String, completion: @escaping (Result<[String: Any]>) -> Void) {
-//        let urlQuery = "https://api.intra.42.fr/v2/users/" + query
-//        let header = ["Authorization" : "Bearer " + token]
-//        Alamofire.request(urlQuery, method: .get, parameters: self.parameters, headers: header).responseJSON { response in
-//            switch response.result {
-//            case .success(let value as [String: Any]):
-//                completion(.success(value))
-//            case .failure(let error):
-//                completion(.failure(error))
-//            default:
-//                fatalError("received non-dictionary JSON response")
-//            }
-//        }
-//    }
-    
     private func checkToken(completion: @escaping (Result<String>) -> ()) {
-        let currentTime = NSDate().timeIntervalSince1970 as Double
         if retrieveTokenFromKeychain(for: "access_token") == nil,
             retrieveTokenFromKeychain(for: "created_at") == nil,
             retrieveTokenFromKeychain(for: "expires_in") == nil {
@@ -137,7 +161,7 @@ class OAuthManager {
         } else if let oldToken = retrieveTokenFromKeychain(for: "access_token"),
             let createdAt = retrieveTokenFromKeychain(for: "created_at"),
             let expires_in = retrieveTokenFromKeychain(for: "expires_in"),
-            currentTime - (createdAt as NSString).doubleValue < (expires_in as NSString).doubleValue {
+            (createdAt as NSString).doubleValue + (expires_in as NSString).doubleValue > NSDate().timeIntervalSince1970 as Double {
             completion(.success(oldToken))
         } else {
             getToken { result in
@@ -189,6 +213,39 @@ class OAuthManager {
             for keyItem in keyItems {
                 updateTokenInKeychain(keyItem.value, for: keyItem.key)
             }
+        }
+    }
+    
+    private func createRequest(for query: String, with token: String, _ type: RequestType) -> URLRequest {
+        var urlString = ""
+        switch type {
+        case .search:
+            urlString = "https://api.intra.42.fr/v2/users/\(query)"
+        case .getImage:
+            urlString = "https://cdn.intra.42.fr/users/\(query).jpg"
+        case .getCoalition:
+            urlString = "https://api.intra.42.fr/v2/users/\(query)/coalitions"
+        }
+        let url = URL(string: urlString)
+        var request = URLRequest(url: url!)
+        request.httpMethod = "get"
+        let bearer = "Bearer \(token)"
+        request.setValue(bearer, forHTTPHeaderField: "Authorization")
+        return request
+    }
+    
+    private func getCoalitionColorScheme(for coalitionColor: String) -> Colors {
+        switch coalitionColor {
+        case "#4caf50ff":
+            return Colors(#colorLiteral(red: 0.7058823529, green: 0.8392156863, blue: 0.6784313725, alpha: 0.7714640411), #colorLiteral(red: 0.3647058824, green: 0.5529411765, blue: 0.3647058824, alpha: 0.72), #colorLiteral(red: 0.5333333333, green: 0.7019607843, blue: 0.6745098039, alpha: 0.76), #colorLiteral(red: 0.6470588235, green: 0.07450980392, blue: 0.1137254902, alpha: 0.7))
+        case "#673ab7ff":
+            return Colors(#colorLiteral(red: 0.6784313725, green: 0.8235294118, blue: 0.9725490196, alpha: 0.3059246575), #colorLiteral(red: 0.7215686275, green: 0.568627451, blue: 0.7568627451, alpha: 0.7), #colorLiteral(red: 0.5529411765, green: 0.1764705882, blue: 0.4, alpha: 0.76), #colorLiteral(red: 0.6784313725, green: 0.8235294118, blue: 0.9725490196, alpha: 0.7))
+        case "#f44336ff":
+            return Colors(#colorLiteral(red: 1, green: 0.5450980392, blue: 0.462745098, alpha: 0.7), #colorLiteral(red: 1, green: 0.1882352941, blue: 0.1921568627, alpha: 0.7), #colorLiteral(red: 0.5568627451, green: 0, blue: 0.06274509804, alpha: 0.7), #colorLiteral(red: 0.5764705882, green: 0.6, blue: 0.6, alpha: 0.7))
+        case "#00bcd4ff":
+            return Colors(#colorLiteral(red: 0.8666666667, green: 0.9176470588, blue: 0.9333333333, alpha: 0.7272945205), #colorLiteral(red: 0.1333333333, green: 0.6980392157, blue: 0.9176470588, alpha: 0.7272945205), #colorLiteral(red: 0.5490196078, green: 0.6745098039, blue: 0.8156862745, alpha: 0.7272945205), #colorLiteral(red: 0.8352941176, green: 0.3882352941, blue: 0.3529411765, alpha: 0.7272945205))
+        default:
+            return Colors(#colorLiteral(red: 0.8666666667, green: 0.9176470588, blue: 0.9333333333, alpha: 0.7272945205), #colorLiteral(red: 0.1333333333, green: 0.6980392157, blue: 0.9176470588, alpha: 0.7272945205), #colorLiteral(red: 0.5490196078, green: 0.6745098039, blue: 0.8156862745, alpha: 0.7272945205), #colorLiteral(red: 0.8352941176, green: 0.3882352941, blue: 0.3529411765, alpha: 0.7272945205))
         }
     }
 }
