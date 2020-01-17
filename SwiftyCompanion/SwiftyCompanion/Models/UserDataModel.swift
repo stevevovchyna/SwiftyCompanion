@@ -22,7 +22,7 @@ struct User {
     let evaluationPoints : String
     let grade : String
     let poolYear : String
-    let userImageURL: String
+    
     var skills : [Skill] = []
     var projects : [Project] = []
     
@@ -32,25 +32,29 @@ struct User {
     
     init(_ userData: NSDictionary, _ image: UIImage, _ colors: Colors) {
         userImage = image
+        
         self.colors = colors
+        
         username = userData["login"] as! String
         email = userData["email"] as! String
         availableAt = (userData["location"] as? NSNull) != nil ? "Unavailable" : userData["location"] as! String
         let cursus = userData["cursus_users"] as! NSArray
         let cursusZero = cursus[0] as! NSDictionary
         level = String(cursusZero["level"] as! Double)
+        grade = cursusZero["grade"] as! String
+        poolYear = userData["pool_year"] as? String ?? "No data"
         phone = userData["phone"] as! String
         firstName = userData["first_name"] as! String
         lastName = userData["last_name"] as! String
-        wallets = String(userData["wallet"] as! Double)
-        evaluationPoints = String(userData["correction_point"] as! Double)
-        grade = cursusZero["grade"] as! String
-        poolYear = userData["pool_year"] as? String ?? "No data"
-        userImageURL = userData["image_url"] as! String
+        wallets = String(userData["wallet"] as! Int)
+        evaluationPoints = String(userData["correction_point"] as! Int)
+        
+        
         for skill in cursusZero["skills"] as! NSArray {
             skills.append(Skill(skill: skill as! NSDictionary))
         }
         skills.sort { $0.skillName < $1.skillName }
+        
         for project in userData["projects_users"] as! NSArray {
             let projectIDs = ((project as! NSDictionary)["cursus_ids"] as! NSArray)[0] as! Double
             let status = (project as! NSDictionary)["status"] as! String
