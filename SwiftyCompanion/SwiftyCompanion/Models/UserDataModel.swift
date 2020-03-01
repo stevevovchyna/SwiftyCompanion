@@ -55,7 +55,7 @@ struct User {
         skills.sort { $0.skillName < $1.skillName }
         
         for project in userData["projects_users"] as! NSArray {
-            let projectIDs = ((project as! NSDictionary)["cursus_ids"] as! NSArray)[0] as! Double
+            let projectIDs = ((project as! NSDictionary)["cursus_ids"] as! NSArray) != [] ? ((project as! NSDictionary)["cursus_ids"] as! NSArray)[0] as! Double : 0
             let status = (project as! NSDictionary)["status"] as! String
             if projectIDs == 1, status == "finished" {
                 projects.append(Project(project: project as! NSDictionary))

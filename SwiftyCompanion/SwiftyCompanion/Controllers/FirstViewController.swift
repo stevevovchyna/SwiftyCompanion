@@ -34,6 +34,7 @@ class FirstViewController: UIViewController {
 extension FirstViewController {
     
     @IBAction func searchUserDataButton(_ sender: UIButton) {
+        searchUserDataButtonLabel.isEnabled = false
         if searchTextField.text != "" {
             isRotating = true
             rotate42logo()
@@ -42,6 +43,7 @@ extension FirstViewController {
                     switch result {
                     case .failure(let error):
                         self.isRotating = false
+                        self.searchUserDataButtonLabel.isEnabled = true
                         presentAlert(text: error, in: self)
                         print(error)
                     case .success(let data, let image, let colors):
@@ -49,12 +51,14 @@ extension FirstViewController {
                         self.isRotating = false
                         self.searchTextField.resignFirstResponder()
                         self.user = foundUser
+                        self.searchUserDataButtonLabel.isEnabled = true
                         self.performSegue(withIdentifier: "showUserData", sender: self)
                     }
                 }
             }
         } else {
             presentAlert(text: "Please enter some text to make a query", in: self)
+            searchUserDataButtonLabel.isEnabled = true
         }
     }
     
